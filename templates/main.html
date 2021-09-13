@@ -11,6 +11,8 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
 
+    <script src="https://kit.fontawesome.com/e917cec6a6.js" crossorigin="anonymous"></script>
+
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
@@ -49,6 +51,13 @@
             background-color: #72a772;
         }
 
+        .hero-body {
+            background-color: #7ac07a;
+        }
+        .btn_mypage {
+            background-color: #72a772;
+        }
+
 
         .wrap {
             width: 900px;
@@ -67,6 +76,9 @@
             padding: 50px;
             border: #396270 solid;
             border-radius: 5px;
+        }
+        #cards-box {
+            margin: 50px 300px 0 300px;
         }
     </style>
     <script>
@@ -129,6 +141,7 @@
             })
         }
     </script>
+    <script src="../../../React/dream_react/template/src/components/nav.jsx"></script>
 
 </head>
 
@@ -156,11 +169,11 @@
     <div class="navbar-end">
         <div class="navbar-item">
             <div class="buttons">
-                <a class="button is-primary">
-                    <strong>Sign up</strong>
+                <a class="button btn_mypage">
+                    <strong>My Page</strong>
                 </a>
                 <a class="button is-light">
-                    Log in
+                    Log out
                 </a>
             </div>
         </div>
@@ -213,11 +226,11 @@
         <i class="fas fa-upload"></i>
       </span>
       <span class="file-label">
-        Choose a file…
+        Choose a file...
       </span>
     </span>
                     <span class="file-name">
-      No file uploaded
+      None
     </span>
                 </label>
             </div>
@@ -226,9 +239,72 @@
             <button type="button" class="btn btn-primary btn_register" onclick="postArticle()">등록</button>
         </div>
     </div>
-    <div id="cards-box" class="card-columns">
-    </div>
+
 </div>
+
+<div id="cards-box" class="card-columns">
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+            </div>
+
 <script>
     const fileInput = document.querySelector('#file-js-example input[type=file]');
     fileInput.onchange = () => {
