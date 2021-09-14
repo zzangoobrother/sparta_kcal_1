@@ -2,6 +2,8 @@
 <html lang="ko">
 
 <head>
+
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -26,12 +28,16 @@
     <!--벌마 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 
-    <title>스파르타코딩클럽 | 나홀로 메모장</title>
+    <title>오늘의 칼로리 | main</title>
 
     <!-- style -->
     <style type="text/css">
         * {
             font-family: 'Do Hyeon', sans-serif;
+        }
+        body {
+            /*width: 70%;*/
+            /*margin: auto;*/
         }
 
         .jumbotron {
@@ -58,9 +64,12 @@
             background-color: #72a772;
         }
 
+        .banner {
 
+        }
         .wrap {
-            width: 900px;
+
+            width: 50%;
             margin: auto;
 
         }
@@ -69,6 +78,7 @@
             color: blue;
             font-weight: bold;
         }
+
 
         #post-box {
             width: 500px;
@@ -82,8 +92,40 @@
         }
     </style>
     <script>
+
+        function update_profile() {
+            let food_name = $('#input_food_name').val()
+            let food_date = $('#input_food_date').val()
+            let food_kcal = $('#input_food_kcal').val()
+            let name = $('#input-name').val()
+            let food_img = $('#input-pic')[0].files[0]
+            let about = $("#textarea-about").val()
+            let form_data = new FormData()
+            form_data.append("foodName_give", food_img)
+            form_data.append("foodDate_give", name)
+            form_data.append("foodKcal_give", about)
+            console.log(name, file, about, form_data)
+data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_kcal },
+            $.ajax({
+                type: "POST",
+                url: "/update_profile",
+                data: form_data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert(response["msg"])
+                        window.location.reload()
+
+                    }
+                }
+            });
+        }
+
+
         $(document).ready(function () {
-            showArticles();
+            showkcal();
         });
 
         function openClose() {
@@ -96,14 +138,13 @@
             }
         }
 
-        function postArticle() {
-            let url = $('#post-url').val()
-            let comment = $('#post-comment').val()
+        function postFood() {
+
 
             $.ajax({
                 type: "POST",
-                url: "/memo",
-                data: {url_give: url, comment_give: comment},
+                url: "/main",
+
                 success: function (response) { // 성공하면
                     alert(response["msg"]);
                     window.location.reload()
@@ -111,34 +152,34 @@
             })
         }
 
-        function showArticles() {
-            $.ajax({
-                type: "GET",
-                url: "/memo",
-                data: {},
-                success: function (response) {
-                    let articles = response['all_articles']
-                    for (let i = 0; i < articles.length; i++) {
-                        let title = articles[i]['title']
-                        let image = articles[i]['image']
-                        let url = articles[i]['url']
-                        let desc = articles[i]['desc']
-                        let comment = articles[i]['comment']
+        function showkcal() {
+           $.ajax({
+               type: "GET",
+               url: "/main",
+               data: {},
+               success: function (response) {
+                   let articles = response['all_articles']
+                   for (let i = 0; i < articles.length; i++) {
+                       let title = articles[i]['title']
+                       let image = articles[i]['image']
+                       let url = articles[i]['url']
+                       let desc = articles[i]['desc']
+                       let comment = articles[i]['comment']
 
-                        let temp_html = `<div class="card">
-                                                <img class="card-img-top"
-                                                     src="${image}"
-                                                     alt="Card image cap">
-                                                <div class="card-body">
-                                                    <a target="_blank" href="${url}" class="card-title">${title}</a>
-                                                    <p class="card-text">${desc}</p>
-                                                    <p class="card-text comment">${comment}</p>
-                                                </div>
-                                            </div>`
-                        $('#cards-box').append(temp_html)
-                    }
-                }
-            })
+                       let temp_html = `<div class="card">
+                                               <img class="card-img-top"
+                                                    src="${image}"
+                                                    alt="Card image cap">
+                                               <div class="card-body">
+                                                   <a target="_blank" href="${url}" class="card-title">${title}</a>
+                                                   <p class="card-text">${desc}</p>
+                                                   <p class="card-text comment">${comment}</p>
+                                               </div>
+                                           </div>`
+                       $('#cards-box').append(temp_html)
+                   }
+               }
+           })
         }
     </script>
     <script src="../../../React/dream_react/template/src/components/nav.jsx"></script>
@@ -148,8 +189,8 @@
 <body>
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-        <a class="navbar-item" href="main.html">
-            <img src="../img/logo.PNG" width="112" height="108">
+        <a class="navbar-item" href="./">
+            <img src="https://media.vlpt.us/images/kbs2082/post/c8014a5d-dcc9-4961-918b-a4685a9f1259/logo.png" width="112" height="108">
         </a>
 
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -181,7 +222,7 @@
     </div>
 </nav>
 
-<section class="hero is-success">
+<section class="hero is-success banner">
     <div class="hero-body">
         <p class="title">
             오늘의 칼로리
@@ -206,15 +247,15 @@
         <div>
             <div class="form-group">
                 <label for="post-url">음식 이름</label>
-                <input id="post-url" class="form-control" placeholder="0000">
+                <input id="input_food_name" class="form-control" placeholder="0000">
             </div>
             <div class="form-group">
                 <label for="post-url">날짜</label>
-                <input id="post-url2" class="form-control" placeholder="0000/00/00">
+                <input id="input_food_date" class="form-control" placeholder="0000/00/00">
             </div>
             <div class="form-group">
                 <label for="post-url">칼로리</label>
-                <input id="post-url3" class="form-control" placeholder="0000Kcal">
+                <input id="input_food_kcal" class="form-control" placeholder="0000Kcal">
             </div>
             <label for="post-url">사진</label>
             <div id="file-js-example" class="file has-name">
@@ -236,7 +277,7 @@
             </div>
 
 
-            <button type="button" class="btn btn-primary btn_register" onclick="postArticle()">등록</button>
+            <button type="button" class="btn btn-primary btn_register" onclick="postFood()">등록</button>
         </div>
     </div>
 
