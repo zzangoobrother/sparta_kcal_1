@@ -1,10 +1,350 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!Doctype html>
+<html lang="ko">
 
+<head>
+
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <script src="https://kit.fontawesome.com/e917cec6a6.js" crossorigin="anonymous"></script>
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+
+    <!-- 구글폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <!--벌마 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+
+    <title>오늘의 칼로리 | main</title>
+
+    <!-- style -->
+    <style type="text/css">
+        * {
+            font-family: 'Do Hyeon', sans-serif;
+        }
+        body {
+            /*width: 70%;*/
+            /*margin: auto;*/
+        }
+
+        .jumbotron {
+            margin-top: 50px;
+            background-color: #72a772;
+        }
+
+        .text1 {
+            color: white;
+        }
+
+        #btn-post-box {
+            background-color: rgba(27, 91, 27, 0.88);
+        }
+        .btn_register{
+            margin-top: 20px;
+            background-color: #72a772;
+        }
+
+        .hero-body {
+            background-color: #7ac07a;
+        }
+        .btn_mypage {
+            background-color: #72a772;
+        }
+
+        .banner {
+
+        }
+        .wrap {
+
+            width: 50%;
+            margin: auto;
+
+        }
+
+        .comment {
+            color: blue;
+            font-weight: bold;
+        }
+
+
+        #post-box {
+            width: 500px;
+            margin: 20px auto;
+            padding: 50px;
+            border: #396270 solid;
+            border-radius: 5px;
+        }
+        #cards-box {
+            margin: 50px 300px 0 300px;
+        }
+    </style>
+    <script>
+
+
+
+        $(document).ready(function () {
+
+            showkcal();
+        });
+
+        function openClose() {
+            if ($("#post-box").css("display") == "block") {
+                $("#post-box").hide();
+                $("#btn-post-box").text("입력하기");
+            } else {
+                $("#post-box").show();
+                $("#btn-post-box").text("닫기");
+            }
+        }
+
+
+        function postFood() {
+          let food_name = $('#input_food_name').val()
+            let food_date = $('#input_food_date').val()
+            let food_kcal = $('#input_food_kcal').val()
+
+            let file = $('#file')[0].files[0]
+            let form_data = new FormData()
+
+            form_data.append("file_give", file)
+            form_data.append("foodName_give", food_name)
+            form_data.append("foodDate_give", food_date)
+            form_data.append("foodKcal_give", food_kcal)
+
+            $.ajax({
+                type: "POST",
+                url: "/main",
+                data: form_data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+
+        function showkcal() {
+           $.ajax({
+               type: "GET",
+               url: "/main",
+               data: {},
+               success: function (response) {
+                   let articles = response['all_articles']
+                   for (let i = 0; i < articles.length; i++) {
+                       let title = articles[i]['title']
+                       let image = articles[i]['image']
+                       let url = articles[i]['url']
+                       let desc = articles[i]['desc']
+                       let comment = articles[i]['comment']
+
+                       let temp_html = `<div class="card">
+                                               <img class="card-img-top"
+                                                    src="${image}"
+                                                    alt="Card image cap">
+                                               <div class="card-body">
+                                                   <a target="_blank" href="${url}" class="card-title">${title}</a>
+                                                   <p class="card-text">${desc}</p>
+                                                   <p class="card-text comment">${comment}</p>
+                                               </div>
+                                           </div>`
+                       $('#cards-box').append(temp_html)
+                   }
+               }
+           })
+        }
+    </script>
+    <script src="../../../React/dream_react/template/src/components/nav.jsx"></script>
+
+</head>
+
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="./">
+            <img src="https://media.vlpt.us/images/kbs2082/post/c8014a5d-dcc9-4961-918b-a4685a9f1259/logo.png" width="112" height="108">
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+
+        </div>
+    </div>
+    </div>
+
+    <div class="navbar-end">
+        <div class="navbar-item">
+            <div class="buttons">
+                <a class="button btn_mypage">
+                    <strong>My Page</strong>
+                </a>
+                <a class="button is-light">
+                    Log out
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+</nav>
+
+<section class="hero is-success banner">
+    <div class="hero-body">
+        <p class="title">
+            오늘의 칼로리
+        </p>
+        <p class="subtitle">
+            Write your Kcal
+        </p>
+    </div>
+</section>
+
+<div class="wrap">
+    <div class="jumbotron">
+        <h1 class="display-4 text1">칼로리 입력기</h1>
+        <p class="lead text1">오늘의 칼로리를 입력해 보세요!</p>
+        <hr class="my-4">
+        <p class="lead">
+            <button onclick="openClose()" id="btn-post-box" type="button" class="btn btn-primary">입력하기
+            </button>
+        </p>
+    </div>
+    <div id="post-box" class="form-post" style="display:none">
+        <div>
+            <div class="form-group">
+                <label for="post-url">음식 이름</label>
+                <input id="input_food_name" class="form-control" placeholder="0000">
+            </div>
+            <div class="form-group">
+                <label for="post-url">날짜</label>
+                <input id="input_food_date" class="form-control" placeholder="0000/00/00">
+            </div>
+            <div class="form-group">
+                <label for="post-url">칼로리</label>
+                <input id="input_food_kcal" class="form-control" placeholder="0000Kcal">
+            </div>
+            <label for="post-url">사진</label>
+            <div id="file-js-example" class="file has-name">
+
+                <label class="file-label">
+                    <input class="file-input" id="file" type="file" name="resume">
+                    <span class="file-cta">
+      <span class="file-icon">
+        <i class="fas fa-upload"></i>
+      </span>
+      <span class="file-label">
+        Choose a file...
+      </span>
+    </span>
+                    <span class="file-name">
+      None
+    </span>
+                </label>
+            </div>
+
+
+            <button type="button" class="btn btn-primary btn_register" onclick="postFood()">등록</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="cards-box" class="card-columns">
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top"
+                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    </div>
+                </div>
+            </div>
+
+<script>
+    const fileInput = document.querySelector('#file-js-example input[type=file]');
+    fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+            const fileName = document.querySelector('#file-js-example .file-name');
+            fileName.textContent = fileInput.files[0].name;
+        }
+    }
+</script>
 </body>
+
 </html>
+
