@@ -17,92 +17,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
 
+    <!--fontawesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+
      <!--벌마 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 
+    <!--css-->
+    <link rel="stylesheet" href="../static/login.css" />
+
+
     <title>오늘의 칼로리 | Login</title>
 
-    <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
 
-         * {
-            font-family: 'Do Hyeon', sans-serif;
-        }
-
-         body {
-             display: flex;
-             flex-direction: column;
-         }
-
-         .hero {
-             display: flex;
-             flex-direction: row;
-             align-items: center;
-             /*padding: 0 100%;*/
-             /*flex-wrap: nowrap;*/
-             margin-bottom: 30px;
-         }
-         .logo-background {
-             background-image: url("../static/kcal.png");
-             background-size: cover;
-             width: 100px;
-             height: 100px;
-             /*margin-left: 100%;*/
-             border: 2px solid;
-         }
-
-        legend,
-        label {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-            margin: -1px;
-            clip-path: polygon(0 0, 0 0, 0 0);
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        fieldset {
-            border: 0;
-        }
-
-        input {
-            border: 0;
-            border-bottom: 1px solid #999;
-        }
-
-        button {
-            margin: 0 10px;
-            width: 250px;
-            padding: 10px;
-            background-color: yellowgreen;
-            border: 0;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:disabled {
-            background-color: #999;
-        }
-
-    </style>
 
 </head>
 <body>
 
     <section class="hero is-success">
-        <div class="logo-background">
-        </div>
         <div class="hero-body">
+            <div class="logo-background">
+            </div>
             <p class="title">
                 오늘의 칼로리
             </p>
@@ -112,25 +47,34 @@
         </div>
     </section>
 
-<!--    <h1>오늘의 칼로리</h1>-->
     <div class="login">
-      <form>
-        <fieldset>
-          <legend>회원가입</legend>
-          <div class="id-section">
-            <label for="id"></label>
-            <span>아이디</span>
-            <input id="id" type="text" class="id" />
-          </div>
-          <div class="pw-section">
-            <label for="pw"></label>
-            <span>비밀번호</span>
-            <input id="pw" type="password" class="pw" />
-          </div>
-          <p class="pw-check"></p>
-          <button type="submit" disabled>로그인</button>
-        </fieldset>
-      </form>
+        <form>
+            <fieldset>
+                <legend>회원가입</legend>
+                <div class="inner">
+                    <div class="id-section">
+                        <label for="id"></label>
+                        <span>아이디</span>
+                        <input id="id" type="text" class="id" placeholder="아이디"/>
+                        <i class="far fa-user"></i>
+                    </div>
+                    <div class="pw-section">
+                        <label for="pw"></label>
+                        <span>비밀번호</span>
+                        <i class="fas fa-lock"></i>
+                        <input id="pw" type="password" class="pw" placeholder="비밀번호"/>
+                    </div>
+                    <div class="btn-section">
+                        <button type="submit" disabled>로그인</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="join">
+        <span>아직 회원이 아니신가요?</span>
+        <button>회원가입하기</button>
     </div>
 
 </body>
