@@ -1,0 +1,143 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+ * {
+    font-family: 'Do Hyeon', sans-serif;
+}
+
+ /*body {*/
+ /*    display: flex;*/
+ /*    flex-direction: column;*/
+ /*}*/
+
+.hero {
+     margin-bottom: 80px;
+}
+.logo-background {
+    background-image: url("../static/kcal.png");
+    background-size: cover;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    margin-bottom: 10px;
+     /*border: 2px solid;*/
+}
+.hero-body {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    padding: 30px 24px;
+}
+.hero-body .subtitle {
+    margin: auto;
+}
+
+/*로그인*/
+.login {
+    margin-bottom: 30px;
+}
+
+legend,
+label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    margin: -1px;
+    clip-path: polygon(0 0, 0 0, 0 0);
+}
+
+fieldset {
+    border: 0;
+}
+
+.inner {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    /*border: 1px solid;*/
+}
+
+.login span {
+    display: none;
+}
+
+input {
+    width: 400px;
+    padding: 17px 40px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-bottom: 1px solid #999;
+}
+
+/*아이디*/
+.id-section {
+    position: relative;
+    /*width: 0;*/
+}
+.id-section .fa-user {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+}
+.id-section input {
+    border-radius: 6px 6px 0 0;
+}
+
+/* 비밀번호 */
+.pw-section {
+    position: relative;
+    margin-bottom: 30px;
+}
+.pw-section .fa-lock {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+}
+.pw-section input {
+    border-radius: 0 0 6px 6px ;
+}
+
+.btn-section button {
+    /*margin: 0 10px;*/
+    width: 400px;
+    padding: 10px;
+    background-color: yellowgreen;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: #999;
+}
+
+/*회원가입*/
+.join {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.join button {
+    width: 150px;
+    padding: 10px;
+    background-color: #fcc419;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 30px;
+}
