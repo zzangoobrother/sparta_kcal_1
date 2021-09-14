@@ -1,0 +1,353 @@
+<!Doctype html>
+<html lang="ko">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <script src="https://kit.fontawesome.com/e917cec6a6.js" crossorigin="anonymous"></script>
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+
+    <!-- 구글폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <!--벌마 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <title>스파르타코딩클럽 | 나홀로 메모장</title>
+
+    <!-- style -->
+    <style type="text/css">
+        * {
+            font-family: 'Do Hyeon', sans-serif;
+        }
+
+        .jumbotron {
+            margin-top: 50px;
+            background-color: #72a772;
+        }
+
+        .text1 {
+            color: white;
+        }
+
+        #btn-post-box {
+            background-color: rgba(27, 91, 27, 0.88);
+        }
+
+        .btn_register {
+            margin-top: 20px;
+            background-color: #72a772;
+        }
+
+        .hero-body {
+            background-color: #7ac07a;
+        }
+
+        .btn_mypage {
+            background-color: #72a772;
+        }
+
+
+        .wrap {
+            width: 900px;
+            margin: auto;
+
+        }
+
+        .comment {
+            color: blue;
+            font-weight: bold;
+        }
+
+        #post-box {
+            width: 500px;
+            margin: 20px auto;
+            padding: 50px;
+            border: #396270 solid;
+            border-radius: 5px;
+        }
+
+        #cards-box {
+            margin: 50px 300px 0 300px;
+        }
+         .table {
+            width: 80%;
+            max-width: 800px;
+            margin: auto;
+            table-layout: fixed;
+        }
+
+        .table th {
+            border-top-style: none;
+        }
+
+        td {
+            background-color: white;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        td > a, a:visited, a:hover, a:active {
+            color: black;
+        }
+
+        thead:first-child tr:first-child th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        thead:first-child tr:first-child th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        tbody:last-child tr:last-child td:first-child {
+            border-radius: 0 0 0 10px;
+        }
+
+        tbody:last-child tr:last-child td:last-child {
+            border-radius: 0 0 10px 0;
+        }
+
+        tr.highlight > td {
+            background-color: #e8344e;
+            color: white;
+        }
+
+        tr.highlight > td > a {
+            color: white;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            listing();
+        });
+
+        function openmain() {
+            window.location.href = "/main"
+        }
+
+        function openClose() {
+            if ($("#post-box").css("display") == "block") {
+                $("#post-box").hide();
+                $("#btn-post-box").text("입력하기");
+            } else {
+                $("#post-box").show();
+                $("#btn-post-box").text("닫기");
+            }
+        }
+
+
+        //프로필 등록
+        function posting() {
+            let height = $('#height').val()
+            let weight = $("#weight").val()
+            let goal_cal = $("#goal_cal").val()
+
+            $.ajax({
+                type: "POST",
+                url: "/api/profile",
+                data: {myid_give: "stravinest", heigt_give: height, weight_give: weight, goal_cal_give: goal_cal},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function listing() {
+            $.ajax({
+                type: "GET",
+                url: "/api/profile?myid=stravinest",
+                data: {},
+                success: function (response) {
+                    let profiles = response['profiles']
+                    console.log(profiles)
+                    for (let i = 0; i < profiles.length; i++) {
+                        let height = profiles[i]['height']
+                        let weight = profiles[i]['weight']
+                        let goal_cal = profiles[i]['goal_cal']
+                        let bmiscore = profiles[i]['bmiscore']
+                        let bmi = profiles[i]['bmi']
+                        let temp_html = `<li >키 :${height}&nbsp;&nbsp;&nbsp;</li>
+<li >몸무게 : ${weight}&nbsp;&nbsp;&nbsp;</li>
+<li >일일 최대 섭취 칼로리 : ${goal_cal}&nbsp;&nbsp;&nbsp;</li>
+<li >bmi : ${bmiscore} ${bmi}&nbsp;&nbsp;&nbsp;</li>
+                            `
+                        $('#tbody-box').append(temp_html)
+                    }
+                }
+            })
+        }
+    </script>
+
+
+</head>
+
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="main.html">
+            <img src="../static/logo.PNG" width="112" height="108">
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+
+        </div>
+    </div>
+    </div>
+
+    <div class="navbar-end">
+        <div class="navbar-item">
+            <div class="buttons">
+                <a class="button btn_mypage" onclick="openmain()">
+                    <strong>오늘의칼로리</strong>
+                </a>
+                <a class="button is-light">
+                    Log out
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+</nav>
+
+<section class="hero is-success">
+    <div class="hero-body">
+        <p class="title">
+            오늘의 프로필
+        </p>
+        <p class="subtitle">
+            Write your profile
+        </p>
+    </div>
+</section>
+
+<div class="wrap">
+    <div class="jumbotron">
+        <h1 class="display-4 text1">프로필 입력기</h1>
+        <p class="lead text1">프로필을 입력해 보세요!</p>
+        <hr class="my-4">
+        <p class="lead">
+            <button onclick="openClose()" id="btn-post-box" type="button" class="btn btn-primary">입력하기
+            </button>
+        </p>
+    </div>
+    <div id="post-box" class="form-post" style="display:none">
+        <div>
+            <div class="form-group">
+                <label for="height">키cm</label>
+                <input id="height" class="form-control" placeholder="0000">
+            </div>
+            <div class="form-group">
+                <label for="weight">몸무게</label>
+                <input id="weight" class="form-control" placeholder="0000">
+            </div>
+            <div class="form-group">
+                <label for="goal_cal">하루 목표 칼로리(성인남성:2400,성인여성:2200) </label>
+                <input id="goal_cal" class="form-control" placeholder="0000Kcal">
+            </div>
+
+
+            <button type="button" class="btn btn-primary btn_register" onclick="posting()">등록</button>
+        </div>
+    </div>
+
+</div>
+
+ <table class="table">
+
+        <tbody id="tbody-box">
+
+
+        </tbody>
+    </table>
+
+<div id="cards-box" class="card-columns">
+    <div class="card">
+        <img class="card-img-top"
+             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+             alt="Card image cap">
+        <div class="card-body">
+            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+        </div>
+    </div>
+    <div class="card">
+        <img class="card-img-top"
+             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+             alt="Card image cap">
+        <div class="card-body">
+            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+        </div>
+    </div>
+    <div class="card">
+        <img class="card-img-top"
+             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+             alt="Card image cap">
+        <div class="card-body">
+            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+        </div>
+    </div>
+    <div class="card">
+        <img class="card-img-top"
+             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+             alt="Card image cap">
+        <div class="card-body">
+            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+        </div>
+    </div>
+    <div class="card">
+        <img class="card-img-top"
+             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+             alt="Card image cap">
+        <div class="card-body">
+            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+        </div>
+    </div>
+    <div class="card">
+        <img class="card-img-top"
+             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+             alt="Card image cap">
+        <div class="card-body">
+            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+</html>
+
