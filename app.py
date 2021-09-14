@@ -44,12 +44,12 @@ def write_review():
 
     return jsonify({'msg': '저장 완료!'})
 
+@app.route('/main', methods=['GET'])
+def show_diary():
+    foodInfos = list(db.foodInfo.find({}, {'_id': False}))
+    return jsonify({'all_foods': foodInfos})
 
 
-# #메인페이지
-# @app.route('/main')
-# def main():
-#     return render_template("main.html")
 
 # 오늘의프로필 페이지
 @app.route('/profile')

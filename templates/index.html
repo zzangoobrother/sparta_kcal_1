@@ -142,27 +142,28 @@
 
 
         function showkcal() {
+            $('#cards-box').empty()
            $.ajax({
                type: "GET",
                url: "/main",
                data: {},
                success: function (response) {
-                   let articles = response['all_articles']
-                   for (let i = 0; i < articles.length; i++) {
-                       let title = articles[i]['title']
-                       let image = articles[i]['image']
-                       let url = articles[i]['url']
-                       let desc = articles[i]['desc']
-                       let comment = articles[i]['comment']
+                   let foods = response['all_foods']
+                   for (let i = 0; i < foods.length; i++) {
+                       let food_name = foods[i]['food_name']
+                       let food_date = foods[i]['food_date']
+                       let food_kcal = foods[i]['food_kcal']
+                       let file = foods[i]['file']
+
 
                        let temp_html = `<div class="card">
                                                <img class="card-img-top"
-                                                    src="${image}"
+                                                    src="../static/${file}"
                                                     alt="Card image cap">
                                                <div class="card-body">
-                                                   <a target="_blank" href="${url}" class="card-title">${title}</a>
-                                                   <p class="card-text">${desc}</p>
-                                                   <p class="card-text comment">${comment}</p>
+                                                   <a class="card-title">${food_name}</a>
+                                                   <p class="card-text">${food_date}</p>
+                                                   <p class="card-text comment">${food_kcal}</p>
                                                </div>
                                            </div>`
                        $('#cards-box').append(temp_html)
