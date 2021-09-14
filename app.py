@@ -2,42 +2,17 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 from pymongo import MongoClient
 import math
 import requests
+
+
 app = Flask(__name__)
 
-from pymongo import MongoClient
-client = MongoClient('localhost', 27017)
-db = client.todayKcal
+client = MongoClient('13.209.47.121', 27017, username="test", password="test")
+db = client.dbsparta_1stminiproject
 
-
-@app.route('/')
+#메인페이지
+@app.route('/main')
 def main():
     return render_template("main.html")
-
-
-
-## API 역할을 하는 부분
-@app.route('/main', methods=['POST'])
-def write_review():
-    foodName_receive = request.form['foodName_give']
-    foodDate_receive = request.form['foodDate_give']
-    foodKcal_receive = request.form['foodKcal_give']
-
-    doc = {
-        'food_name':foodName_receive,
-        'food_date':foodDate_receive,
-        'food_kcal':foodKcal_receive
-    }
-
-    db.foodInfo.insert_one(doc)
-
-    return jsonify({'msg': '저장 완료!'})
-
-
-
-# #메인페이지
-# @app.route('/main')
-# def main():
-#     return render_template("main.html")
 
 # 오늘의프로필 페이지
 @app.route('/profile')
@@ -123,10 +98,5 @@ def update_profile():
 
 
 
-
 if __name__ == '__main__':
-
-    app.run(debug=True)
-
     app.run('0.0.0.0', port=5000, debug=True)
-
