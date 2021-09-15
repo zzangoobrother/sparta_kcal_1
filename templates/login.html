@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <!-- 구글폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+    <!--font awesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+
+    <!--css-->
+    <link rel="stylesheet" href="../static/login.css" />
+
+
+    <title>오늘의 칼로리 | Login</title>
+
+    <script>
+    function sign_in() {
+        let username = $("#userid").val()
+        let password = $("#userpw").val()
+
+        if (username == "") {
+            $("#help-id-login").text("아이디를 입력해주세요.")
+            {#alert('아이디를 입력해주세요');#}
+            $("#input-username").focus()
+            return;
+        } else {
+            $("#help-id-login").text("")
+        }
+
+        if (password == "") {
+            $("#help-password-login").text("비밀번호를 입력해주세요.")
+            {#alert('비밀번호를 입력해주세요');#}
+            $("#input-password").focus()
+            return;
+        } else {
+            $("#help-password-login").text("")
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/sign_in",
+            data: {
+                username_give: username,
+                password_give: password
+            },
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    $.cookie('mytoken', response['token'], {path: '/'});
+                    window.location.replace("/")
+                } else {
+                    alert(response['msg'])
+                }
+            }
+        });
+    }
+
+
+    </script>
+
+</head>
+<body>
+
+{#헤드#}
+    <section class="hero is-success">
+        <div class="hero-body">
+            <div class="logo-background">
+            </div>
+            <p class="title">
+                오늘의 칼로리
+            </p>
+            <p class="subtitle">
+                Write your Kcal
+            </p>
+        </div>
+    </section>
+
+{#로그인#}
+    <div class="login">
+        <div class="inner">
+            <div class="id-section">
+                <label for="id"></label>
+                <span>아이디</span>
+                <input id="userid" type="text" class="id" placeholder="아이디"/>
+                <i class="far fa-user"></i>
+            </div>
+            <div class="pw-section">
+                <label for="pw"></label>
+                <span>비밀번호</span>
+                <i class="fas fa-lock"></i>
+                <input id="userpw" type="password" class="pw" placeholder="비밀번호"/>
+            </div>
+            <div class="info">
+                <p id="help-id-login"></p>
+                <p id="help-password-login" ></p>
+            </div>
+            <div class="btn-section">
+                <button onclick="sign_in()">로그인</button>
+            </div>
+        </div>
+    </div>
+
+{#회원가입#}
+    <div class="join">
+        <span>아직 회원이 아니신가요?</span>
+        <button>회원가입하기</button>
+    </div>
+
+</body>
+</html>
