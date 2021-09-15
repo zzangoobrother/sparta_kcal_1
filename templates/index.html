@@ -37,11 +37,6 @@
         * {
             font-family: 'Do Hyeon', sans-serif;
         }
-        body {
-            /*width: 70%;*/
-            /*margin: auto;*/
-        }
-
         .jumbotron {
             margin-top: 50px;
             background-color: #72a772;
@@ -66,14 +61,9 @@
             background-color: #72a772;
         }
 
-        .banner {
-
-        }
         .wrap {
-
             width: 50%;
             margin: auto;
-
         }
 
         .comment {
@@ -91,6 +81,16 @@
         }
         #cards-box {
             margin: 50px 300px 0 300px;
+
+        }
+        .card_made {
+            display: flex;
+            flex-wrap: wrap;
+
+        }
+        .card_img {
+            width: 280px;
+            height: 170px;
         }
     </style>
     <script>
@@ -114,8 +114,11 @@
 
 
         function postFood() {
-          let food_name = $('#input_food_name').val()
-            let food_date = $('#input_food_date').val()
+            let dt =  new Date()
+            let date = dt.getFullYear() +"년&nbsp " + (dt.getMonth()+1) +"월&nbsp " + dt.getDate() + "일"
+            let now = Date.now();
+            let food_name = $('#input_food_name').val()
+            let food_date = date
             let food_kcal = $('#input_food_kcal').val()
 
             let file = $('#file')[0].files[0]
@@ -125,6 +128,7 @@
             form_data.append("foodName_give", food_name)
             form_data.append("foodDate_give", food_date)
             form_data.append("foodKcal_give", food_kcal)
+            form_data.append("now_give", now)
 
             $.ajax({
                 type: "POST",
@@ -156,8 +160,8 @@
                        let file = foods[i]['file']
 
 
-                       let temp_html = `<div class="card">
-                                               <img class="card-img-top"
+                       let temp_html = `<div class="card card_made">
+                                               <img class="card-img-top card_img"
                                                     src="../static/${file}"
                                                     alt="Card image cap">
                                                <div class="card-body">
@@ -200,7 +204,7 @@
     <div class="navbar-end">
         <div class="navbar-item">
             <div class="buttons">
-                <a href="profile.html" class="button btn_mypage">
+                <a href="/profile" class="button btn_mypage">
                     <strong>My Page</strong>
                 </a>
                 <a class="button is-light">
@@ -239,10 +243,10 @@
                 <label for="post-url">음식 이름</label>
                 <input id="input_food_name" class="form-control" placeholder="0000">
             </div>
-            <div class="form-group">
-                <label for="post-url">날짜</label>
-                <input id="input_food_date" class="form-control" placeholder="0000/00/00">
-            </div>
+{#            <div class="form-group">#}
+{#                <label for="post-url">날짜</label>#}
+{#                <input id="input_food_date" class="form-control" placeholder="0000/00/00">#}
+{#            </div>#}
             <div class="form-group">
                 <label for="post-url">칼로리</label>
                 <input id="input_food_kcal" class="form-control" placeholder="0000Kcal">

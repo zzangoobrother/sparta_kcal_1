@@ -22,6 +22,7 @@ def write_review():
     foodName_receive = request.form['foodName_give']
     foodDate_receive = request.form['foodDate_give']
     foodKcal_receive = request.form['foodKcal_give']
+    now_receive = request.form['now_give']
 
     file = request.files["file_give"]
 
@@ -38,6 +39,7 @@ def write_review():
         'food_date':foodDate_receive,
         'food_kcal':foodKcal_receive,
         'file': f'{filename}.{extension}',
+        'now':now_receive,
     }
 
     db.foodInfo.insert_one(doc)
@@ -46,7 +48,10 @@ def write_review():
 
 @app.route('/main', methods=['GET'])
 def show_diary():
-    foodInfos = list(db.foodInfo.find({}, {'_id': False}))
+    foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+
+
+
     return jsonify({'all_foods': foodInfos})
 
 
