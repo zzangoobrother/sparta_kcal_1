@@ -81,7 +81,7 @@
         }
 
         #cards-box {
-            {#margin: 50px 300px 70px 300px;#}
+
             display: flex;
             justify-content: center;
             padding: 50px 300px 50px 300px;
@@ -142,7 +142,8 @@
             let now = Date.now();
             let food_name = $('#input_food_name').val()
             let food_date = date
-            let food_kcal = $('#input_food_kcal').val()
+            let food_kca = $('#input_food_kcal').val()
+            let food_kcal= parseInt(food_kca)
 
             let file = $('#file')[0].files[0]
             let form_data = new FormData()
@@ -198,6 +199,19 @@
                }
            })
         }
+        function send(){
+             $.ajax({
+                type: "GET",
+                url: "/api/send",
+                data: {},
+                success: function (response) {
+                    let status = response["status"]
+                    window.location.href = "/profile?status_give="+status
+                }
+            });
+
+
+        }
     </script>
     <script src="../../../React/dream_react/template/src/components/nav.jsx"></script>
 
@@ -226,8 +240,8 @@
 
     <div class="navbar-end">
         <div class="navbar-item">
-            <div class="buttons">
-                <a href="/profile" class="button btn_mypage">
+            <div class="buttons" onclick="send()">
+                <a class="button btn_mypage">
                     <strong>My Page</strong>
                 </a>
                 <a href="login" class="button is-light" onclick="sign_out()">
@@ -263,18 +277,18 @@
     <div id="post-box" class="form-post" style="display:none">
         <div>
             <div class="form-group">
-                <label for="post-url">음식 이름</label>
+                <label for="input_food_name">음식 이름</label>
                 <input id="input_food_name" class="form-control" placeholder="0000">
             </div>
 {#            <div class="form-group">#}
-{#                <label for="post-url">날짜</label>#}
+{#                <label for="input_food_date">날짜</label>#}
 {#                <input id="input_food_date" class="form-control" placeholder="0000/00/00">#}
 {#            </div>#}
             <div class="form-group">
-                <label for="post-url">칼로리</label>
+                <label for="input_food_kcal">칼로리</label>
                 <input id="input_food_kcal" class="form-control" placeholder="0000Kcal">
             </div>
-            <label for="post-url">사진</label>
+            <label for="file-js-example">사진</label>
             <div id="file-js-example" class="file has-name">
 
                 <label class="file-label">
