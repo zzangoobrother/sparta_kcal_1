@@ -80,18 +80,25 @@
             border-radius: 5px;
         }
         #cards-box {
-            margin: 50px 300px 0 300px;
+            margin: 50px 300px 20px 300px;
+
 
         }
+        .section_card {
+            text-align: center;
+        }
         .card_made {
-            display: flex;
-            flex-wrap: wrap;
+
 
         }
         .card_img {
-            width: 280px;
-            height: 170px;
+            width: 300px;
+            height: 200px;
         }
+        .card-body {
+
+        }
+
     </style>
     <script>
 
@@ -162,7 +169,7 @@
 
                        let temp_html = `<div class="card card_made">
                                                <img class="card-img-top card_img"
-                                                    src="../static/${file}"
+                                                    src="../static/img/${file}"
                                                     alt="Card image cap">
                                                <div class="card-body">
                                                    <a class="card-title">${food_name}</a>
@@ -277,7 +284,8 @@
 
 </div>
 
-<div id="cards-box" class="card-columns">
+<section class="section_card">
+    <div id="cards-box" class="row row-cols-1 row-cols-md-3 g-4">
                 <div class="card">
                     <img class="card-img-top"
                          src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
@@ -289,6 +297,8 @@
                     </div>
                 </div>
             </div>
+</section>
+
 
 <script>
     const fileInput = document.querySelector('#file-js-example input[type=file]');
