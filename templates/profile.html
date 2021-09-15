@@ -83,7 +83,8 @@
         #cards-box {
             margin: 50px 300px 0 300px;
         }
-         .table {
+
+        .table {
             width: 80%;
             max-width: 800px;
             margin: auto;
@@ -129,14 +130,24 @@
         tr.highlight > td > a {
             color: white;
         }
+
+        #cards-box2 {
+
+            display: flex;
+            justify-content: center;
+            padding: 50px 300px 50px 300px;
+
+
+        }
     </style>
     <script>
         $(document).ready(function () {
             listing();
+            showkcal();
         });
 
         function openmain() {
-            window.location.href = "/main"
+            window.location.href = "/"
         }
 
         function openClose() {
@@ -174,7 +185,7 @@
                 data: {},
                 success: function (response) {
                     let profiles = response['profiles']
-                    console.log(profiles)
+
                     for (let i = 0; i < profiles.length; i++) {
                         let height = profiles[i]['height']
                         let weight = profiles[i]['weight']
@@ -191,6 +202,59 @@
                 }
             })
         }
+
+        function showkcal() {
+            $('#cards-box2').empty()
+            let dt =  new Date()
+            let date = dt.getFullYear() +"년&nbsp " + (dt.getMonth()+1) +"월&nbsp " + dt.getDate() + "일"
+            let food_date = date
+
+            $.ajax({
+                type: "GET",
+                url: "/api/profile_cal",
+                data: {food_date:food_date},
+                success: function (response) {
+                    let foods = response['all_foods']
+                    // var sum = new Array()
+                    // for ( let i=0;i<foods.length;i++){
+                    //     sum[i]=0
+                    // }
+                    // for (let i = 0; i < foods.length; i++) {
+                    //     for (let k = 0; k < foods.length; k++) {
+                    //         if (foods[i]['food_name']==foods[k]['food_name']){
+                    //             console.log(foods[k]['food_kcal'])
+                    //             sum[i]+=(foods[k]['food_kcal'])
+                    //
+                    //         }
+                    //
+                    //
+                    //     }
+                    //
+                    // }
+                    // console.log(sum)
+
+                    for (let i = 0; i < foods.length; i++) {
+                        let food_name = foods[i]['food_name']
+                        let food_date = foods[i]['food_date']
+                        let food_kcal = foods[i]['food_kcal']
+                        let file = foods[i]['file']
+                        let temp_html = `<div class="card card_made">
+                                               <img class="card-img-top card_img"
+                                                    src="../static/img/${file}"
+                                                    alt="Card image cap">
+                                               <div class="card-body">
+                                                   <a class="card-title">${food_name}</a>
+                                                   <p class="card-text">날짜: ${food_date}</p>
+                                                   <p class="card-text comment">${food_kcal} Kcal</p>
+                                               </div>
+                                           </div>`
+                        $('#cards-box2').append(temp_html)
+                    }
+                }
+            })
+        }
+
+
     </script>
 
 
@@ -199,7 +263,7 @@
 <body>
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-        <a class="navbar-item" href="main.html">
+        <a class="navbar-item" href="/">
             <img src="../static/logo.PNG" width="112" height="108">
         </a>
 
@@ -275,15 +339,15 @@
 
 </div>
 
- <table class="table">
+<table class="table">
 
-        <tbody id="tbody-box">
+    <tbody id="tbody-box">
 
 
-        </tbody>
-    </table>
+    </tbody>
+</table>
 
-<div id="cards-box" class="card-columns">
+<div id="cards-box2" class="card-columns">
     <div class="card">
         <img class="card-img-top"
              src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"

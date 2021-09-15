@@ -6,16 +6,16 @@ import jwt
 import hashlib
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
-app = Flask(__name__)
 
+app = Flask(__name__)
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
-client = MongoClient('localhost', 27017)
-db = client.todayKcal
+client = MongoClient('13.209.47.121', 27017, username="test", password="test")
+db = client.dbsparta_1stminiproject
 
 
 @app.route('/')
@@ -31,15 +31,12 @@ def home():
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 
-@app.route('/')
-def main():
-    return render_template("index.html")
-
 # 로그인 페이지
 @app.route('/login')
 def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
+
 
 ## API 역할을 하는 부분
 
@@ -55,8 +52,8 @@ def sign_in():
 
     if result is not None:
         payload = {
-         'id': username_receive,
-         'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+            'id': username_receive,
+            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
@@ -73,6 +70,8 @@ def write_review():
     foodKcal_receive = request.form['foodKcal_give']
     now_receive = request.form['now_give']
 
+    print(foodDate_receive)
+
     file = request.files["file_give"]
 
     extension = file.filename.split('.')[-1]
@@ -84,25 +83,23 @@ def write_review():
     file.save(save_to)
 
     doc = {
-        'food_name':foodName_receive,
-        'food_date':foodDate_receive,
-        'food_kcal':foodKcal_receive,
+        'food_name': foodName_receive,
+        'food_date': foodDate_receive,
+        'food_kcal': int(foodKcal_receive),
         'file': f'{filename}.{extension}',
-        'now':now_receive,
+        'now': now_receive,
     }
 
     db.foodInfo.insert_one(doc)
 
     return jsonify({'msg': '저장 완료!'})
 
+
 @app.route('/main', methods=['GET'])
 def show_diary():
     foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
 
-
-
     return jsonify({'all_foods': foodInfos})
-
 
 
 # 오늘의프로필 페이지
@@ -111,52 +108,63 @@ def profile():
     return render_template("profile.html")
 
 
-#오늘의프로필등록
+# 오늘의프로필등록
 @app.route('/api/profile', methods=['POST'])
 def save_profile():
     myid_receive = request.form['myid_give']
     height_receive = request.form['heigt_give']
     weight_receive = request.form['weight_give']
-    goal_cal_receive =request.form['goal_cal_give']
-    h =int(height_receive)
-    w =int(weight_receive)
-    bmiscore = math.trunc(w/(h*h)*10000)
-    bmi=""
-    if(bmiscore>30):
-        bmi="비만"
-    elif(bmiscore>=25):
-        bmi="과체중"
-    elif(bmiscore>=19):
-        bmi="정상"
+    goal_cal_receive = request.form['goal_cal_give']
+    h = int(height_receive)
+    w = int(weight_receive)
+    bmiscore = math.trunc(w / (h * h) * 10000)
+    bmi = ""
+    if (bmiscore > 30):
+        bmi = "비만"
+    elif (bmiscore >= 25):
+        bmi = "과체중"
+    elif (bmiscore >= 19):
+        bmi = "정상"
     else:
-        bmi="저체중"
+        bmi = "저체중"
 
     print(bmi)
-    doc ={
-        'myid':myid_receive,
-        'height':height_receive,
-        'weight':weight_receive,
-        'goal_cal':goal_cal_receive,
+    doc = {
+        'myid': myid_receive,
+        'height': height_receive,
+        'weight': weight_receive,
+        'goal_cal': goal_cal_receive,
         'bmi': bmi,
-        'bmiscore':bmiscore
+        'bmiscore': bmiscore
     }
     db.todayKcal.insert_one(doc)
 
     return jsonify({'msg': '등록 완료!'})
 
-#오늘의 프로필 리스팅
+
+# 오늘의 프로필 리스팅
 @app.route('/api/profile', methods=['GET'])
 def show_profile():
-    myid_receive=request.args.get("myid")
-    print(myid_receive)
-    profiles = list(db.todayKcal.find({"myid":myid_receive},{'_id':False}))
-    print(profiles)
+    myid_receive = request.args.get("myid")
+    profiles = list(db.todayKcal.find({"myid": myid_receive}, {'_id': False}))
     return jsonify({'profiles': profiles})
 
-#오늘의 프로필 수정
+
+@app.route('/api/profile_cal', methods=['GET'])
+def show_profile_cal():
+
+   # foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+    foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+    cal = list(db.foodInfo.find({"food_date":foodInfos[0]["food_date"]}, {'_id': False}))
+
+
+    return jsonify({'all_foods': foodInfos,'sum_cal':cal})
+
+
+# 오늘의 프로필 수정
 @app.route('/api/profile', methods=['POST'])
 def update_profile():
-    myid_receive=request.args.get("myid")
+    myid_receive = request.args.get("myid")
     height_receive = request.form['heigt_give']
     weight_receive = request.form['weight_give']
     goal_cal_receive = request.form['goal_cal_give']
@@ -183,11 +191,7 @@ def update_profile():
     return jsonify({'result': 'success'})
 
 
-
-
 if __name__ == '__main__':
-
     app.run(debug=True)
 
     app.run('0.0.0.0', port=5000, debug=True)
-
