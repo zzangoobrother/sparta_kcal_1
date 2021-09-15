@@ -11,26 +11,6 @@
 
     <title>오늘의 칼로리 | Login</title>
 
-    <style>
-        .is-hidden {
-            display: none !important;
-        }
-    </style>
-
-    <script>
-        $(document).ready(function () {
-            if (document.cookie.match('mytoken') != null) {
-                $('#buttonLogin').toggleClass("is-hidden")
-            }
-        });
-
-        function sign_out() {
-            $.removeCookie('mytoken', {path: '/'});
-            alert('로그아웃!')
-            window.location.href = '/login'
-        }
-    </script>
-
 </head>
 <body>
 <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -56,15 +36,7 @@
     <div class="navbar-end">
         <div class="navbar-item">
             <div class="buttons">
-                <a href="/profile" class="button btn_mypage">
-                    <strong>My Page</strong>
-                </a>
 
-                <div id="buttonLogin" class="is-hidden">
-                    <a class="button is-light" onclick="sign_out()">
-                        Log Out
-                    </a>
-                </div>
             </div>
         </div>
     </div>

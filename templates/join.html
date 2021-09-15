@@ -151,6 +151,12 @@
                     password_give: password
                 },
                 success: function (response) {
+                    if (response["exists"]) {
+                        $("#help-id").text("이미 존재하는 아이디입니다.").removeClass("is-safe").addClass("is-danger")
+                        $("#input-username").focus()
+                        $("#help-id").removeClass("is-loading")
+                        return;
+                    }
                     alert("회원가입 완료")
                     window.location.replace("/login")
                 }
