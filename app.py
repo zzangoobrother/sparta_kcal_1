@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 from pymongo import MongoClient
 import math
-import requests
+
+from datetime import datetime
+app = Flask(__name__)
 
 
 app = Flask(__name__)
@@ -12,7 +14,45 @@ db = client.dbsparta_1stminiproject
 #메인페이지
 @app.route('/main')
 def main():
-    return render_template("main.html")
+    return render_template("index.html")
+
+
+## API 역할을 하는 부분
+@app.route('/main', methods=['POST'])
+def write_review():
+    foodName_receive = request.form['foodName_give']
+    foodDate_receive = request.form['foodDate_give']
+    foodKcal_receive = request.form['foodKcal_give']
+    now_receive = request.form['now_give']
+
+    file = request.files["file_give"]
+
+    extension = file.filename.split('.')[-1]
+    today = datetime.now()
+    mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+
+    filename = f'file-{mytime}'
+    save_to = f'static/{filename}.{extension}'
+    file.save(save_to)
+
+    doc = {
+        'food_name':foodName_receive,
+        'food_date':foodDate_receive,
+        'food_kcal':foodKcal_receive,
+        'file': f'{filename}.{extension}',
+        'now':now_receive,
+    }
+
+    db.foodInfo.insert_one(doc)
+
+    return jsonify({'msg': '저장 완료!'})
+
+@app.route('/main', methods=['GET'])
+def show_diary():
+    foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+
+    return jsonify({'all_foods': foodInfos})
+
 
 # 오늘의프로필 페이지
 @app.route('/profile')
