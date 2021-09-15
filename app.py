@@ -133,11 +133,12 @@ def show_diary():
 # 오늘의프로필 페이지
 @app.route('/profile')
 def profile():
-    return render_template("profile.html")
+    status_receive = request.args.get("status_give","old")
+    return render_template("profile.html",status=status_receive)
 
 
 # 오늘의프로필등록
-@app.route('/api/profile', methods=['POST'])
+@app.route('/api/profile_post', methods=['POST'])
 def save_profile():
     myid_receive = request.form['myid_give']
     height_receive = request.form['heigt_give']
@@ -190,9 +191,9 @@ def show_profile_cal():
 
 
 # 오늘의 프로필 수정
-@app.route('/api/profile', methods=['POST'])
+@app.route('/api/profile_adjust', methods=['POST'])
 def update_profile():
-    myid_receive = request.args.get("myid")
+    myid_receive = request.form['myid_give']
     height_receive = request.form['heigt_give']
     weight_receive = request.form['weight_give']
     goal_cal_receive = request.form['goal_cal_give']
@@ -210,11 +211,13 @@ def update_profile():
         bmi = "저체중"
 
     print(myid_receive)
-    db.users.update_one({'myid': myid_receive}, {'$set': {'height': height_receive}})
-    db.users.update_one({'myid': myid_receive}, {'$set': {'weight': weight_receive}})
-    db.users.update_one({'myid': myid_receive}, {'$set': {'goal_cal': goal_cal_receive}})
-    db.users.update_one({'myid': myid_receive}, {'$set': {'bmi': bmi}})
-    db.users.update_one({'myid': myid_receive}, {'$set': {'bmiscore': bmiscore}})
+    print(height_receive)
+
+    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'height': height_receive}})
+    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'weight': weight_receive}})
+    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'goal_cal': goal_cal_receive}})
+    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'bmi': bmi}})
+    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'bmiscore': bmiscore}})
 
     return jsonify({'result': 'success'})
 

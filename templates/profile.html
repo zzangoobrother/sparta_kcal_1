@@ -47,6 +47,10 @@
             background-color: rgba(27, 91, 27, 0.88);
         }
 
+        #btn-fix-box {
+            background-color: rgba(27, 91, 27, 0.88);
+        }
+
         .btn_register {
             margin-top: 20px;
             background-color: #72a772;
@@ -67,6 +71,16 @@
 
         }
 
+        #cards-box {
+            object-fit: cover;
+
+            display: flex;
+
+            padding: 50px 300px 50px 300px;
+            margin: auto;
+
+        }
+
         .comment {
             color: blue;
             font-weight: bold;
@@ -80,67 +94,47 @@
             border-radius: 5px;
         }
 
-        #cards-box {
+        #cards-box2 {
+
             margin: 50px 300px 0 300px;
         }
 
         .table {
+            font-size: xx-large;
             width: 80%;
             max-width: 800px;
             margin: auto;
             table-layout: fixed;
         }
 
-        .table th {
-            border-top-style: none;
-        }
-
-        td {
-            background-color: white;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        td > a, a:visited, a:hover, a:active {
-            color: black;
-        }
-
-        thead:first-child tr:first-child th:first-child {
-            border-radius: 10px 0 0 0;
-        }
-
-        thead:first-child tr:first-child th:last-child {
-            border-radius: 0 10px 0 0;
-        }
-
-        tbody:last-child tr:last-child td:first-child {
-            border-radius: 0 0 0 10px;
-        }
-
-        tbody:last-child tr:last-child td:last-child {
-            border-radius: 0 0 10px 0;
-        }
-
-        tr.highlight > td {
-            background-color: #e8344e;
-            color: white;
-        }
-
-        tr.highlight > td > a {
-            color: white;
-        }
-
-        #cards-box2 {
+        #cards-box {
 
             display: flex;
             justify-content: center;
             padding: 50px 300px 50px 300px;
-
+            margin: auto;
 
         }
+
+        .section_card {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+
+        }
+
+        .card_img {
+            width: 300px;
+            height: 200px;
+        }
+
+        .card-body {
+            background-color: #ebf6eb;
+        }
+
     </style>
     <script>
+        //let userid = '{{ userid }}'
         $(document).ready(function () {
             listing();
             showkcal();
@@ -166,14 +160,62 @@
             let height = $('#height').val()
             let weight = $("#weight").val()
             let goal_cal = $("#goal_cal").val()
+            if (height == "") {
+                alert("키를 입력해주세요")
+                $("#height").focus()
+                return;
+            }
+            if (weight == "") {
+                alert("몸무게를 입력해주세요")
+                $("#weight").focus()
+                return;
+            }
+            if (goal_cal == "") {
+                alert("하루목표 칼로리를 입력해주세요")
+                $("#goal_cal").focus()
+                return;
+            }
+
 
             $.ajax({
                 type: "POST",
-                url: "/api/profile",
+                url: "/api/profile_post",
                 data: {myid_give: "stravinest", heigt_give: height, weight_give: weight, goal_cal_give: goal_cal},
                 success: function (response) {
                     alert(response["msg"])
                     window.location.reload()
+                }
+            });
+        }
+
+        function adjusing() {
+            let height = $('#height').val()
+            let weight = $("#weight").val()
+            let goal_cal = $("#goal_cal").val()
+            if (height == "") {
+                alert("키를 입력해주세요")
+                $("#height").focus()
+                return;
+            }
+            if (weight == "") {
+                alert("몸무게를 입력해주세요")
+                $("#weight").focus()
+                return;
+            }
+            if (goal_cal == "") {
+                alert("하루목표 칼로리를 입력해주세요")
+                $("#goal_cal").focus()
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/api/profile_adjust",
+                data: {myid_give: "stravinest", heigt_give: height, weight_give: weight, goal_cal_give: goal_cal},
+                success: function (response) {
+                    alert("수정되었습니다.")
+                    window.location.reload()
+                    listing();
+
                 }
             });
         }
@@ -192,10 +234,19 @@
                         let goal_cal = profiles[i]['goal_cal']
                         let bmiscore = profiles[i]['bmiscore']
                         let bmi = profiles[i]['bmi']
+                        let bmicolor = ""
+                        if (bmi == "정상") {
+                            bmicolor = "color:green"
+                        } else if (bmi == "저체중") {
+                            bmicolor = "color:blue"
+                        } else {
+                            bmicolor = "color:red"
+                        }
+
                         let temp_html = `<li >키 :${height}&nbsp;&nbsp;&nbsp;</li>
 <li >몸무게 : ${weight}&nbsp;&nbsp;&nbsp;</li>
 <li >일일 최대 섭취 칼로리 : ${goal_cal}&nbsp;&nbsp;&nbsp;</li>
-<li >bmi : ${bmiscore} ${bmi}&nbsp;&nbsp;&nbsp;</li>
+<li >bmi : ${bmiscore} <span style=${bmicolor}> ${bmi}</span >&nbsp;&nbsp;&nbsp;</li>
                             `
                         $('#tbody-box').append(temp_html)
                     }
@@ -204,15 +255,15 @@
         }
 
         function showkcal() {
-            $('#cards-box2').empty()
-            let dt =  new Date()
-            let date = dt.getFullYear() +"년&nbsp " + (dt.getMonth()+1) +"월&nbsp " + dt.getDate() + "일"
+            $('#cards-box').empty()
+            let dt = new Date()
+            let date = dt.getFullYear() + "년&nbsp " + (dt.getMonth() + 1) + "월&nbsp " + dt.getDate() + "일"
             let food_date = date
 
             $.ajax({
                 type: "GET",
                 url: "/api/profile_cal",
-                data: {food_date:food_date},
+                data: {food_date: food_date},
                 success: function (response) {
                     let foods = response['all_foods']
                     // var sum = new Array()
@@ -248,7 +299,7 @@
                                                    <p class="card-text comment">${food_kcal} Kcal</p>
                                                </div>
                                            </div>`
-                        $('#cards-box2').append(temp_html)
+                        $('#cards-box').append(temp_html)
                     }
                 }
             })
@@ -308,15 +359,48 @@
 </section>
 
 <div class="wrap">
-    <div class="jumbotron">
-        <h1 class="display-4 text1">프로필 입력기</h1>
-        <p class="lead text1">프로필을 입력해 보세요!</p>
-        <hr class="my-4">
-        <p class="lead">
-            <button onclick="openClose()" id="btn-post-box" type="button" class="btn btn-primary">입력하기
-            </button>
-        </p>
-    </div>
+
+    {% if status=="new" %}
+        <div class="jumbotron">
+            <h1 class="display-4 text1">프로필 입력기</h1>
+            <p class="lead text1">프로필이 아직 입력이 안되었습니다. 입력해주세요!</p>
+            <hr class="my-4">
+            <p class="lead">
+                <button onclick="openClose()" id="btn-post-box" type="button" class="btn btn-primary">입력하기
+                </button>
+            </p>
+        </div>
+        <div id="post-box" class="form-post" style="display:none">
+            <div>
+                <div class="form-group">
+                    <label for="height">키cm</label>
+                    <input id="height" class="form-control" placeholder="0000">
+                </div>
+                <div class="form-group">
+                    <label for="weight">몸무게</label>
+                    <input id="weight" class="form-control" placeholder="0000">
+                </div>
+                <div class="form-group">
+                    <label for="goal_cal">하루 목표 칼로리(성인남성:2400,성인여성:2200) </label>
+                    <input id="goal_cal" class="form-control" placeholder="0000Kcal">
+                </div>
+
+
+                <button type="button" class="btn btn-primary btn_register" onclick="posting()">등록</button>
+            </div>
+        </div>
+    {% else %}
+        <div class="jumbotron">
+            <h1 class="display-4 text1">프로필 수정기</h1>
+            <p class="lead text1">기존 프로필 수정가능합니다.</p>
+            <hr class="my-4">
+            <p class="lead">
+                <button onclick="openClose()" id="btn-fix-box" type="button" class="btn btn-primary">수정하기
+                </button>
+            </p>
+        </div>
+
+
     <div id="post-box" class="form-post" style="display:none">
         <div>
             <div class="form-group">
@@ -333,10 +417,10 @@
             </div>
 
 
-            <button type="button" class="btn btn-primary btn_register" onclick="posting()">등록</button>
+            <button type="button" class="btn btn-primary btn_register" onclick="adjusing()">수정</button>
         </div>
     </div>
-
+    {% endif %}
 </div>
 
 <table class="table">
@@ -347,69 +431,21 @@
     </tbody>
 </table>
 
-<div id="cards-box2" class="card-columns">
-    <div class="card">
-        <img class="card-img-top"
-             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-             alt="Card image cap">
-        <div class="card-body">
-            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-        </div>
-    </div>
-    <div class="card">
-        <img class="card-img-top"
-             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-             alt="Card image cap">
-        <div class="card-body">
-            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-        </div>
-    </div>
-    <div class="card">
-        <img class="card-img-top"
-             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-             alt="Card image cap">
-        <div class="card-body">
-            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-        </div>
-    </div>
-    <div class="card">
-        <img class="card-img-top"
-             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-             alt="Card image cap">
-        <div class="card-body">
-            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-        </div>
-    </div>
-    <div class="card">
-        <img class="card-img-top"
-             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-             alt="Card image cap">
-        <div class="card-body">
-            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-        </div>
-    </div>
-    <div class="card">
-        <img class="card-img-top"
-             src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-             alt="Card image cap">
-        <div class="card-body">
-            <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-            <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-        </div>
-    </div>
-</div>
 
+<section class="section_card">
+    <div id="cards-box" class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="card">
+            <img class="card-img-top"
+                 src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                 alt="Card image cap">
+            <div class="card-body">
+                <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
 </body>
 
