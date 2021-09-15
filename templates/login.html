@@ -36,6 +36,10 @@
     <title>오늘의 칼로리 | Login</title>
 
     <script>
+        $(document).ready(function () {
+
+            $.removeCookie('mytoken', {path: '/'});
+        });
     function sign_in() {
         let username = $("#userid").val()
         let password = $("#userpw").val()

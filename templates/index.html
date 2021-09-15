@@ -113,6 +113,8 @@
 
 
 
+
+
         $(document).ready(function () {
 
             showkcal();
@@ -128,6 +130,11 @@
             }
         }
 
+
+         function sign_out() {
+
+            alert('로그아웃!')
+        }
 
         function postFood() {
             let dt =  new Date()
@@ -223,7 +230,7 @@
                 <a href="/profile" class="button btn_mypage">
                     <strong>My Page</strong>
                 </a>
-                <a class="button is-light">
+                <a href="login" class="button is-light" onclick="sign_out()">
                     Log out
                 </a>
             </div>
