@@ -1,0 +1,106 @@
+Index: app.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from pymongo import MongoClient\r\nimport jwt\r\nimport datetime\r\nimport hashlib\r\nimport math\r\nfrom flask import Flask, render_template, jsonify, request, redirect, url_for\r\nfrom werkzeug.utils import secure_filename\r\nfrom datetime import datetime, timedelta\r\n\r\n\r\napp = Flask(__name__)\r\napp.config[\"TEMPLATES_AUTO_RELOAD\"] = True\r\napp.config['UPLOAD_FOLDER'] = \"./static/profile_pics\"\r\n\r\nSECRET_KEY = 'SPARTA'\r\n\r\nclient = MongoClient('localhost', 27017)\r\ndb = client.todayKcal\r\n# client = MongoClient('13.209.47.121', 27017, username=\"test\", password=\"test\")\r\n# db = client.dbsparta_1stminiproject\r\n\r\n\r\n@app.route('/')\r\ndef home():\r\n    token_receive = request.cookies.get('mytoken')\r\n    try:\r\n        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])\r\n        user_info = db.users.find_one({\"username\": payload[\"id\"]})\r\n        return render_template('index.html', user_info=user_info)\r\n    except jwt.ExpiredSignatureError:\r\n        return redirect(url_for(\"login\", msg=\"로그인 시간이 만료되었습니다.\"))\r\n    except jwt.exceptions.DecodeError:\r\n        return redirect(url_for(\"login\", msg=\"로그인 정보가 존재하지 않습니다.\"))\r\n\r\n# 로그인 페이지\r\n@app.route('/login')\r\ndef login():\r\n    msg = request.args.get(\"msg\")\r\n    return render_template('login.html', msg=msg)\r\n\r\n# [로그인 API]\r\n@app.route('/sign_in', methods=['POST'])\r\ndef sign_in():\r\n    # 로그인\r\n    username_receive = request.form['username_give']\r\n    password_receive = request.form['password_give']\r\n\r\n    pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()\r\n    result = db.users.find_one({'username': username_receive, 'password': pw_hash})\r\n\r\n    if result is not None:\r\n        payload = {\r\n         'id': username_receive,\r\n         'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지\r\n        }\r\n        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')\r\n\r\n        return jsonify({'result': 'success', 'token': token})\r\n    # 찾지 못하면\r\n    else:\r\n        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})\r\n\r\n\r\n\r\n\r\n# @app.route('/')\r\n# def main():\r\n#     return render_template(\"main.html\")\r\n# -------------------------------\r\n#\r\n## API 역할을 하는 부분\r\n@app.route('/main', methods=['POST'])\r\ndef write_review():\r\n    foodName_receive = request.form['foodName_give']\r\n    foodDate_receive = request.form['foodDate_give']\r\n    foodKcal_receive = request.form['foodKcal_give']\r\n\r\n    doc = {\r\n        'food_name':foodName_receive,\r\n        'food_date':foodDate_receive,\r\n        'food_kcal':foodKcal_receive\r\n    }\r\n\r\n    db.foodInfo.insert_one(doc)\r\n\r\n    return jsonify({'msg': '저장 완료!'})\r\n\r\n\r\n\r\n#메인페이지\r\n@app.route('/main')\r\ndef main():\r\n    return render_template(\"main.html\")\r\n\r\n# 오늘의프로필 페이지\r\n@app.route('/profile')\r\ndef profile():\r\n    return render_template(\"profile.html\")\r\n\r\n# # 로그인페이지\r\n# @app.route('/login')\r\n# def login():\r\n#     return render_template(\"login.html\")\r\n\r\n\r\n#오늘의프로필등록\r\n@app.route('/api/profile', methods=['POST'])\r\ndef save_profile():\r\n    myid_receive = request.form['myid_give']\r\n    height_receive = request.form['heigt_give']\r\n    weight_receive = request.form['weight_give']\r\n    goal_cal_receive =request.form['goal_cal_give']\r\n    h =int(height_receive)\r\n    w =int(weight_receive)\r\n    bmiscore = math.trunc(w/(h*h)*10000)\r\n    bmi=\"\"\r\n    if(bmiscore>30):\r\n        bmi=\"비만\"\r\n    elif(bmiscore>=25):\r\n        bmi=\"과체중\"\r\n    elif(bmiscore>=19):\r\n        bmi=\"정상\"\r\n    else:\r\n        bmi=\"저체중\"\r\n\r\n    print(bmi)\r\n    doc ={\r\n        'myid':myid_receive,\r\n        'height':height_receive,\r\n        'weight':weight_receive,\r\n        'goal_cal':goal_cal_receive,\r\n        'bmi': bmi,\r\n        'bmiscore':bmiscore\r\n    }\r\n    db.todayKcal.insert_one(doc)\r\n\r\n    return jsonify({'msg': '등록 완료!'})\r\n\r\n#오늘의 프로필 리스팅\r\n@app.route('/api/profile', methods=['GET'])\r\ndef show_profile():\r\n    myid_receive=request.args.get(\"myid\")\r\n    print(myid_receive)\r\n    profiles = list(db.todayKcal.find({\"myid\":myid_receive},{'_id':False}))\r\n    print(profiles)\r\n    return jsonify({'profiles': profiles})\r\n\r\n#오늘의 프로필 수정\r\n@app.route('/api/profile', methods=['POST'])\r\ndef update_profile():\r\n    myid_receive=request.args.get(\"myid\")\r\n    height_receive = request.form['heigt_give']\r\n    weight_receive = request.form['weight_give']\r\n    goal_cal_receive = request.form['goal_cal_give']\r\n    h = int(height_receive)\r\n    w = int(weight_receive)\r\n    bmiscore = math.trunc(w / (h * h) * 10000)\r\n    bmi = \"\"\r\n    if (bmiscore > 30):\r\n        bmi = \"비만\"\r\n    elif (bmiscore >= 25):\r\n        bmi = \"과체중\"\r\n    elif (bmiscore >= 19):\r\n        bmi = \"정상\"\r\n    else:\r\n        bmi = \"저체중\"\r\n\r\n    print(myid_receive)\r\n    db.users.update_one({'myid': myid_receive}, {'$set': {'height': height_receive}})\r\n    db.users.update_one({'myid': myid_receive}, {'$set': {'weight': weight_receive}})\r\n    db.users.update_one({'myid': myid_receive}, {'$set': {'goal_cal': goal_cal_receive}})\r\n    db.users.update_one({'myid': myid_receive}, {'$set': {'bmi': bmi}})\r\n    db.users.update_one({'myid': myid_receive}, {'$set': {'bmiscore': bmiscore}})\r\n\r\n    return jsonify({'result': 'success'})\r\n\r\n\r\n\r\n\r\nif __name__ == '__main__':\r\n\r\n    app.run(debug=True)\r\n\r\n    app.run('0.0.0.0', port=5000, debug=True)\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app.py b/app.py
+--- a/app.py	(revision 2b86601356bf0b288db048d6f602986f01c60874)
++++ b/app.py	(date 1631626913651)
+@@ -32,11 +32,7 @@
+     except jwt.exceptions.DecodeError:
+         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+ 
+-# 로그인 페이지
+-@app.route('/login')
+-def login():
+-    msg = request.args.get("msg")
+-    return render_template('login.html', msg=msg)
++
+ 
+ # [로그인 API]
+ @app.route('/sign_in', methods=['POST'])
+@@ -63,11 +59,6 @@
+ 
+ 
+ 
+-# @app.route('/')
+-# def main():
+-#     return render_template("main.html")
+-# -------------------------------
+-#
+ ## API 역할을 하는 부분
+ @app.route('/main', methods=['POST'])
+ def write_review():
+@@ -86,21 +77,24 @@
+     return jsonify({'msg': '저장 완료!'})
+ 
+ 
++# 로그인 페이지
++@app.route('/login')
++def login():
++    msg = request.args.get("msg")
++    return render_template('login.html', msg=msg)
+ 
+ #메인페이지
+-@app.route('/main')
++@app.route('/index')
+ def main():
+-    return render_template("main.html")
++    return render_template("index.html")
+ 
+ # 오늘의프로필 페이지
+ @app.route('/profile')
+ def profile():
+     return render_template("profile.html")
+ 
+-# # 로그인페이지
+-# @app.route('/login')
+-# def login():
+-#     return render_template("login.html")
++
++
+ 
+ 
+ #오늘의프로필등록
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"cc0de498-9247-484b-8a2a-65cdeadbbb5a\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/static/login.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/static/login.css\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/templates/index.html\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/templates/jjjjoin.html\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/templates/login.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/templates/login.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/templates/main.html\" beforeDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FlaskConsoleOptions\" custom-start-script=\"import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\\nApp: %s [%s]\\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))\">\r\n    <envs>\r\n      <env key=\"FLASK_APP\" value=\"app\" />\r\n    </envs>\r\n    <option name=\"myCustomStartScript\" value=\"import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\\nApp: %s [%s]\\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))\" />\r\n    <option name=\"myEnvs\">\r\n      <map>\r\n        <entry key=\"FLASK_APP\" value=\"app\" />\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1y7M7g6vGekVtHgaErTq87sSp9A\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$\" />\r\n    <property name=\"settings.editor.selected.configurable\" value=\"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\" />\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Flask server.Flask (app.py)\">\r\n    <configuration name=\"login.html\" type=\"JavascriptDebugType\" temporary=\"true\" nameIsGenerated=\"true\" uri=\"http://localhost:63342/sparta_kcal_1/templates/login.html\" useBuiltInWebServerPort=\"true\">\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"sparta_kcal_1\" type=\"PythonConfigurationType\" factoryName=\"Python\">\r\n      <module name=\"sparta_kcal_1\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/app.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"Flask (app.py)\" type=\"Python.FlaskServer\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"sparta_kcal_1\" />\r\n      <option name=\"target\" value=\"$PROJECT_DIR$/app.py\" />\r\n      <option name=\"targetType\" value=\"PATH\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"launchJavascriptDebuger\" value=\"false\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Flask server.Flask (app.py)\" />\r\n        <item itemvalue=\"JavaScript Debug.login.html\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"cc0de498-9247-484b-8a2a-65cdeadbbb5a\" name=\"Changes\" comment=\"\" />\r\n      <created>1631598008079</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1631598008079</updated>\r\n      <workItem from=\"1631598012516\" duration=\"1173000\" />\r\n      <workItem from=\"1631600019558\" duration=\"6371000\" />\r\n      <workItem from=\"1631606551557\" duration=\"1170000\" />\r\n      <workItem from=\"1631609817772\" duration=\"4496000\" />\r\n      <workItem from=\"1631614875313\" duration=\"870000\" />\r\n      <workItem from=\"1631615771567\" duration=\"306000\" />\r\n      <workItem from=\"1631616169928\" duration=\"410000\" />\r\n      <workItem from=\"1631616728607\" duration=\"2200000\" />\r\n      <workItem from=\"1631619513178\" duration=\"338000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/sparta_kcal_1$sparta_kcal_1.coverage\" NAME=\"sparta_kcal_1 Coverage Results\" MODIFIED=\"1631609785574\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"\" />\r\n    <SUITE FILE_PATH=\"coverage/sparta_kcal_1$Flask__app_py_.coverage\" NAME=\"Flask (app.py) Coverage Results\" MODIFIED=\"1631619519562\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 2b86601356bf0b288db048d6f602986f01c60874)
++++ b/.idea/workspace.xml	(date 1631630102114)
+@@ -4,11 +4,6 @@
+     <list default="true" id="cc0de498-9247-484b-8a2a-65cdeadbbb5a" name="Changes" comment="">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/static/login.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/login.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/templates/jjjjoin.html" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/templates/main.html" beforeDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -106,7 +101,7 @@
+       <workItem from="1631615771567" duration="306000" />
+       <workItem from="1631616169928" duration="410000" />
+       <workItem from="1631616728607" duration="2200000" />
+-      <workItem from="1631619513178" duration="338000" />
++      <workItem from="1631619513178" duration="6036000" />
+     </task>
+     <servers />
+   </component>
+@@ -115,6 +110,6 @@
+   </component>
+   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+     <SUITE FILE_PATH="coverage/sparta_kcal_1$sparta_kcal_1.coverage" NAME="sparta_kcal_1 Coverage Results" MODIFIED="1631609785574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+-    <SUITE FILE_PATH="coverage/sparta_kcal_1$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1631619519562" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
++    <SUITE FILE_PATH="coverage/sparta_kcal_1$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1631626918335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+   </component>
+ </project>
+\ No newline at end of file

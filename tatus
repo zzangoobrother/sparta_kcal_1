@@ -1,0 +1,236 @@
+[33mcommit 92702b2611de341ddbff80a1fe0b4d0350bbff0d[m[33m ([m[1;36mHEAD -> [m[1;32mjinsik3[m[33m, [m[1;31morigin/jinsik3[m[33m)[m
+Author: Your Name <you@example.com>
+Date:   Wed Sep 15 09:06:30 2021 +0900
+
+    login html 3
+
+[33mcommit 431f6ec9d06f2a9aced473dd89ff28a6d23c6f0f[m
+Merge: b93ef20 ae18e92
+Author: Your Name <you@example.com>
+Date:   Wed Sep 15 00:07:14 2021 +0900
+
+    123
+
+[33mcommit b93ef2005bb773b4b5aca4037c9da8dc3716abfd[m
+Author: Your Name <you@example.com>
+Date:   Tue Sep 14 23:44:50 2021 +0900
+
+    hm..
+
+[33mcommit ae18e928907e8640c01c65c526ff2683d77a41b3[m[33m ([m[1;31morigin/kimbumsoo0820[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mkimbumsoo0820[m[33m)[m
+Merge: de8afa3 fb4b274
+Author: KimBumSoo <58503562+kimbumsoo0820@users.noreply.github.com>
+Date:   Tue Sep 14 21:34:49 2021 +0900
+
+    Merge pull request #8 from kimbumsoo0820/main
+    
+    Main
+
+[33mcommit fb4b274ec1042f8fef33f7202976eb4fb71e38c1[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Tue Sep 14 21:34:16 2021 +0900
+
+    update
+
+[33mcommit a40c7830706adea004a7a102115a520f7b4e3446[m
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Tue Sep 14 21:33:44 2021 +0900
+
+    update
+
+[33mcommit de8afa3ce7ab1319e1f668375d71be8e6b640feb[m
+Merge: c1e6822 3cb550b
+Author: KimBumSoo <58503562+kimbumsoo0820@users.noreply.github.com>
+Date:   Tue Sep 14 21:26:12 2021 +0900
+
+    Merge pull request #7 from kimbumsoo0820/main
+    
+    Main
+
+[33mcommit 3cb550b39708a91c4ddc8185855837bfd00224a0[m
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Tue Sep 14 21:19:14 2021 +0900
+
+    메인
+
+[33mcommit 59d2d9da26768e1cd13ece2a06be4e54f4bfdde3[m
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Tue Sep 14 20:56:41 2021 +0900
+
+    이미지 저장 완료
+
+[33mcommit 2b86601356bf0b288db048d6f602986f01c60874[m
+Author: Your Name <you@example.com>
+Date:   Tue Sep 14 20:48:15 2021 +0900
+
+    login success
+
+[33mcommit e65f9c8d03198f14a9752709017d8cdb506e474f[m
+Merge: 7a7b68d c1e6822
+Author: Your Name <you@example.com>
+Date:   Tue Sep 14 17:36:55 2021 +0900
+
+    aass
+
+[33mcommit 7a7b68db3c7197791bca01fb0dcdee2a9b39b6ec[m
+Author: Your Name <you@example.com>
+Date:   Tue Sep 14 17:25:47 2021 +0900
+
+    aa
+
+[33mcommit c1e68229b0ea7203c73d44f8e61efa34ed0e91a4[m
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Tue Sep 14 17:18:15 2021 +0900
+
+    update
+
+[33mcommit 7368d15a0a475c4f599cd2ed0ad7d644fc53c4b6[m
+Merge: 7606524 c5b753d
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Tue Sep 14 17:09:11 2021 +0900
+
+    update
+
+[33mcommit 7606524225537cbaefc17ba07ad648fb80ccb555[m
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Tue Sep 14 17:01:12 2021 +0900
+
+    update
+
+[33mcommit c5b753da7054dfd44520a2d8d9660c01722f00d9[m
+Merge: 06610cd 4baa727
+Author: stravinest <88120776+stravinest@users.noreply.github.com>
+Date:   Tue Sep 14 16:51:53 2021 +0900
+
+    Merge pull request #6 from kimbumsoo0820/eungyu
+    
+    Eungyu
+
+[33mcommit 4baa727cbe829f21500ab869097347cafdfaa91f[m[33m ([m[1;31morigin/eungyu[m[33m)[m
+Author: LAPTOP-SMOR46KU\strav <stravinest@naver.com>
+Date:   Tue Sep 14 16:26:23 2021 +0900
+
+    오늘의 프로필,서버
+
+[33mcommit f1972c319baf28548ff20c40ab5986bc20502fb9[m
+Merge: a374e23 06610cd
+Author: LAPTOP-SMOR46KU\strav <stravinest@naver.com>
+Date:   Tue Sep 14 13:21:50 2021 +0900
+
+    'ok'
+
+[33mcommit 06610cd5c9597174dfebb5f880e381ef7f4552d1[m
+Merge: d732ab7 e4a9916
+Author: lipton-web <82028756+lipton-web@users.noreply.github.com>
+Date:   Tue Sep 14 11:39:05 2021 +0900
+
+    Merge pull request #5 from kimbumsoo0820/jinsik3
+    
+    Jinsik3
+
+[33mcommit e4a99165fa80858d6725155ca9bb47ed79e9e671[m
+Author: Your Name <you@example.com>
+Date:   Tue Sep 14 11:36:52 2021 +0900
+
+    add css
+
+[33mcommit 2191ff4b8346aaf770356c83989866d5bc4405ba[m
+Author: Your Name <you@example.com>
+Date:   Tue Sep 14 11:35:20 2021 +0900
+
+    login page2
+
+[33mcommit d732ab7759c7ae88255780c5b54cbbecce88766b[m
+Merge: 6f24bea a55476c
+Author: lipton-web <82028756+lipton-web@users.noreply.github.com>
+Date:   Tue Sep 14 09:25:06 2021 +0900
+
+    Merge pull request #4 from kimbumsoo0820/jinsik3
+    
+    Jinsik3
+
+[33mcommit a55476c17f27b96688a6f444aa419385e79256d0[m
+Author: Your Name <you@example.com>
+Date:   Tue Sep 14 09:22:37 2021 +0900
+
+    static
+
+[33mcommit 7083986b7ccf3a308bc2a1a46c39f3868ccb40d7[m
+Author: Your Name <you@example.com>
+Date:   Tue Sep 14 09:20:27 2021 +0900
+
+    ëlogin page
+
+[33mcommit 6f24bea8ab5130d4622d77b2430d20c33d129a5b[m
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Tue Sep 14 08:55:16 2021 +0900
+
+    update
+
+[33mcommit cd5c9db7072dc57cb20c0f306d3ebe269d0e732c[m
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Mon Sep 13 22:16:47 2021 +0900
+
+    update
+
+[33mcommit a374e23804a23a2807f0d88d14dc80f547ef8742[m
+Merge: fe07a18 6d1883a
+Author: LAPTOP-SMOR46KU\strav <stravinest@naver.com>
+Date:   Mon Sep 13 17:02:04 2021 +0900
+
+    new
+
+[33mcommit 6d1883addbeec94ddce252bf2283496dd299c2d7[m
+Merge: 2bffdf2 4a87fa9
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Mon Sep 13 16:50:33 2021 +0900
+
+    Merge branch 'kimbumsoo0820' of https://github.com/kimbumsoo0820/sparta_kcal_1 into kimbumsoo0820
+
+[33mcommit 2bffdf27fff363befb6edb98f60851067ce8e2f7[m
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Mon Sep 13 16:48:48 2021 +0900
+
+    first
+
+[33mcommit 4a87fa943630e339e61b41f6c2f28d8738afde15[m
+Merge: 8f93d5c 61f39a6
+Author: lipton-web <82028756+lipton-web@users.noreply.github.com>
+Date:   Mon Sep 13 16:35:59 2021 +0900
+
+    Merge pull request #2 from kimbumsoo0820/jinsik2
+    
+    jinsik2
+
+[33mcommit 61f39a6b3688128fd1f30f6bc8d6c2d591e97b1c[m[33m ([m[1;31morigin/jinsik2[m[33m)[m
+Author: Your Name <you@example.com>
+Date:   Mon Sep 13 16:32:54 2021 +0900
+
+    jinsik2
+
+[33mcommit fe07a18ad01621a3461aa4934c3a069a051d7b92[m
+Author: LAPTOP-SMOR46KU\strav <stravinest@naver.com>
+Date:   Mon Sep 13 16:27:24 2021 +0900
+
+    second
+
+[33mcommit 8f93d5ccf33f13c4b26f79ac3840bf7b52bb8d5c[m
+Merge: 5c00aa2 dd0d1a4
+Author: stravinest <88120776+stravinest@users.noreply.github.com>
+Date:   Mon Sep 13 15:59:34 2021 +0900
+
+    Merge pull request #1 from kimbumsoo0820/eungyu
+    
+    eun
+
+[33mcommit dd0d1a409123b2bb1c39d46eab35564a4ccedf58[m
+Author: LAPTOP-SMOR46KU\strav <stravinest@naver.com>
+Date:   Mon Sep 13 15:56:21 2021 +0900
+
+    eun
+
+[33mcommit 5c00aa21e97e900684d65bd155b2e602e4fd36e0[m
+Author: kimbumsoo0820 <kbs2082@naver.com>
+Date:   Mon Sep 13 15:50:55 2021 +0900
+
+    test
