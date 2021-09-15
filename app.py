@@ -31,7 +31,7 @@ def write_review():
     mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
 
     filename = f'file-{mytime}'
-    save_to = f'static/{filename}.{extension}'
+    save_to = f'static/img/{filename}.{extension}'
     file.save(save_to)
 
     doc = {
