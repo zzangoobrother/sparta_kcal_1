@@ -2,13 +2,38 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc0de498-9247-484b-8a2a-65cdeadbbb5a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/1_kcal.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/1_kcal.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-14-21-41-56.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-14-21-42-13.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-00-15-28.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-00-16-46.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-00-23-48.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-00-25-23.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-07-58-35.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-32-03.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-32-41.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-32-48.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-32-58.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-33-22.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-33-30.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-53-34.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-54-37.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-54-43.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-54-50.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-54-59.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-55-09.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-55-15.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-56-09.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-56-30.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-57-37.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-08-57-58.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-09-04-24.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/file-2021-09-15-09-06-07.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/login.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/login.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +132,7 @@
       <workItem from="1631616169928" duration="410000" />
       <workItem from="1631616728607" duration="2200000" />
       <workItem from="1631619513178" duration="12073000" />
-      <workItem from="1631663899798" duration="3247000" />
+      <workItem from="1631663899798" duration="4959000" />
     </task>
     <servers />
   </component>

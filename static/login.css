@@ -40,7 +40,11 @@
 
 /*로그인*/
 .login {
+<<<<<<< HEAD
     margin-bottom: 20px;
+=======
+    margin-bottom: 30px;
+>>>>>>> 4dc38b938ae9f841daf2af3b0d6be52c77a8f9f5
 }
 
 legend,
@@ -64,6 +68,10 @@ fieldset {
     justify-content: center;
     align-content: center;
     flex-wrap: wrap;
+<<<<<<< HEAD
+=======
+    /*border: 1px solid;*/
+>>>>>>> 4dc38b938ae9f841daf2af3b0d6be52c77a8f9f5
 }
 
 .login span {
@@ -97,7 +105,11 @@ input {
 /* 비밀번호 */
 .pw-section {
     position: relative;
+<<<<<<< HEAD
     margin-bottom: 20px;
+=======
+    margin-bottom: 30px;
+>>>>>>> 4dc38b938ae9f841daf2af3b0d6be52c77a8f9f5
 }
 .pw-section .fa-lock {
     position: absolute;
@@ -110,6 +122,7 @@ input {
     border-radius: 0 0 6px 6px ;
 }
 
+<<<<<<< HEAD
 /*아이디 비멀번호 확인*/
 .info {
     display: flex;
@@ -127,6 +140,8 @@ input {
 
 /*로그인버튼*/
 
+=======
+>>>>>>> 4dc38b938ae9f841daf2af3b0d6be52c77a8f9f5
 .btn-section button {
     /*margin: 0 10px;*/
     width: 400px;
@@ -137,9 +152,15 @@ input {
     cursor: pointer;
 }
 
+<<<<<<< HEAD
 /*button:disabled {*/
 /*    background-color: #999;*/
 /*}*/
+=======
+button:disabled {
+    background-color: #999;
+}
+>>>>>>> 4dc38b938ae9f841daf2af3b0d6be52c77a8f9f5
 
 /*회원가입*/
 .join {

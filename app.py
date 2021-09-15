@@ -1,16 +1,14 @@
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from pymongo import MongoClient
-import jwt
-import datetime
-import hashlib
 import math
-from flask import Flask, render_template, jsonify, request, redirect, url_for
-from werkzeug.utils import secure_filename
-from datetime import datetime, timedelta
-
-
 import requests
-from datetime import datetime
+import jwt
+import hashlib
+from datetime import datetime, timedelta
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
+
+
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
@@ -18,12 +16,9 @@ SECRET_KEY = 'SPARTA'
 
 client = MongoClient('localhost', 27017)
 db = client.todayKcal
-# client = MongoClient('13.209.47.121', 27017, username="test", password="test")
-# db = client.dbsparta_1stminiproject
 
 
 @app.route('/')
-
 def home():
     token_receive = request.cookies.get('mytoken')
     try:
@@ -36,6 +31,17 @@ def home():
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 
+@app.route('/')
+def main():
+    return render_template("index.html")
+
+# 로그인 페이지
+@app.route('/login')
+def login():
+    msg = request.args.get("msg")
+    return render_template('login.html', msg=msg)
+
+## API 역할을 하는 부분
 
 # [로그인 API]
 @app.route('/sign_in', methods=['POST'])
@@ -60,17 +66,12 @@ def sign_in():
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
 
-def main():
-    return render_template("index.html")
-
-
-
-## API 역할을 하는 부분
 @app.route('/main', methods=['POST'])
 def write_review():
     foodName_receive = request.form['foodName_give']
     foodDate_receive = request.form['foodDate_give']
     foodKcal_receive = request.form['foodKcal_give']
+    now_receive = request.form['now_give']
 
     file = request.files["file_give"]
 
@@ -83,10 +84,11 @@ def write_review():
     file.save(save_to)
 
     doc = {
-        'food_name': foodName_receive,
-        'food_date': foodDate_receive,
-        'food_kcal': foodKcal_receive,
+        'food_name':foodName_receive,
+        'food_date':foodDate_receive,
+        'food_kcal':foodKcal_receive,
         'file': f'{filename}.{extension}',
+        'now':now_receive,
     }
 
     db.foodInfo.insert_one(doc)
@@ -95,29 +97,18 @@ def write_review():
 
 @app.route('/main', methods=['GET'])
 def show_diary():
-    foodInfos = list(db.foodInfo.find({}, {'_id': False}))
+    foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+
+
+
     return jsonify({'all_foods': foodInfos})
 
-# 로그인 페이지
-@app.route('/login')
-def login():
-    msg = request.args.get("msg")
-    return render_template('login.html', msg=msg)
-
-
-#메인페이지
-@app.route('/index')
-def main():
-    return render_template("index.html")
 
 
 # 오늘의프로필 페이지
 @app.route('/profile')
 def profile():
     return render_template("profile.html")
-
-
-
 
 
 #오늘의프로필등록
@@ -199,5 +190,4 @@ if __name__ == '__main__':
     app.run(debug=True)
 
     app.run('0.0.0.0', port=5000, debug=True)
-
 

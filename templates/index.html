@@ -28,9 +28,7 @@
     <!--벌마 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 
-
     <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
-
 
     <title>오늘의 칼로리 | main</title>
 
@@ -39,11 +37,6 @@
         * {
             font-family: 'Do Hyeon', sans-serif;
         }
-        body {
-            /*width: 70%;*/
-            /*margin: auto;*/
-        }
-
         .jumbotron {
             margin-top: 50px;
             background-color: #72a772;
@@ -68,18 +61,12 @@
             background-color: #72a772;
         }
 
-        .banner {
-
-        }
         .wrap {
-
             width: 50%;
             margin: auto;
-
         }
 
         .comment {
-            color: blue;
             color: #396270;
             font-weight: bold;
         }
@@ -92,45 +79,37 @@
             border: #396270 solid;
             border-radius: 5px;
         }
+
         #cards-box {
-            margin: 50px 300px 0 300px;
+            {#margin: 50px 300px 70px 300px;#}
+            display: flex;
+            justify-content: center;
+            padding: 50px 300px 50px 300px;
+
+
+
         }
+        .section_card {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+
+        }
+        .card_made {
+
+
+        }
+        .card_img {
+            width: 300px;
+            height: 200px;
+        }
+        .card-body {
+            background-color: #ebf6eb;
+        }
+
     </style>
     <script>
 
-
-        function update_profile() {
-            let food_name = $('#input_food_name').val()
-            let food_date = $('#input_food_date').val()
-            let food_kcal = $('#input_food_kcal').val()
-            let name = $('#input-name').val()
-            let food_img = $('#input-pic')[0].files[0]
-            let about = $("#textarea-about").val()
-            let form_data = new FormData()
-            form_data.append("foodName_give", food_img)
-            form_data.append("foodDate_give", name)
-            form_data.append("foodKcal_give", about)
-            console.log(name, file, about, form_data)
-data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_kcal },
-            $.ajax({
-                type: "POST",
-                url: "/update_profile",
-                data: form_data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    if (response["result"] == "success") {
-                        alert(response["msg"])
-                        window.location.reload()
-
-                    }
-                }
-            });
-        }
-
-
-        $(document).ready(function () {
 
 
         $(document).ready(function () {
@@ -148,12 +127,13 @@ data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_k
             }
         }
 
-        function postFood() {
-
 
         function postFood() {
-          let food_name = $('#input_food_name').val()
-            let food_date = $('#input_food_date').val()
+            let dt =  new Date()
+            let date = dt.getFullYear() +"년&nbsp " + (dt.getMonth()+1) +"월&nbsp " + dt.getDate() + "일"
+            let now = Date.now();
+            let food_name = $('#input_food_name').val()
+            let food_date = date
             let food_kcal = $('#input_food_kcal').val()
 
             let file = $('#file')[0].files[0]
@@ -163,19 +143,11 @@ data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_k
             form_data.append("foodName_give", food_name)
             form_data.append("foodDate_give", food_date)
             form_data.append("foodKcal_give", food_kcal)
+            form_data.append("now_give", now)
 
             $.ajax({
                 type: "POST",
                 url: "/main",
-
-                success: function (response) { // 성공하면
-                    alert(response["msg"]);
-                    window.location.reload()
-                }
-            })
-        }
-
-        function showkcal() {
                 data: form_data,
                 cache: false,
                 contentType: false,
@@ -203,9 +175,9 @@ data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_k
                        let file = foods[i]['file']
 
 
-                       let temp_html = `<div class="card">
-                                               <img class="card-img-top"
-                                                    src="../static/${file}"
+                       let temp_html = `<div class="card card_made">
+                                               <img class="card-img-top card_img"
+                                                    src="../static/img/${file}"
                                                     alt="Card image cap">
                                                <div class="card-body">
                                                    <a class="card-title">${food_name}</a>
@@ -240,10 +212,6 @@ data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_k
     <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
 
-
-    <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-
         </div>
     </div>
     </div>
@@ -251,8 +219,7 @@ data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_k
     <div class="navbar-end">
         <div class="navbar-item">
             <div class="buttons">
-                <a class="button btn_mypage">
-                <a href="profile.html" class="button btn_mypage">
+                <a href="/profile" class="button btn_mypage">
                     <strong>My Page</strong>
                 </a>
                 <a class="button is-light">
@@ -291,10 +258,10 @@ data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_k
                 <label for="post-url">음식 이름</label>
                 <input id="input_food_name" class="form-control" placeholder="0000">
             </div>
-            <div class="form-group">
-                <label for="post-url">날짜</label>
-                <input id="input_food_date" class="form-control" placeholder="0000/00/00">
-            </div>
+{#            <div class="form-group">#}
+{#                <label for="post-url">날짜</label>#}
+{#                <input id="input_food_date" class="form-control" placeholder="0000/00/00">#}
+{#            </div>#}
             <div class="form-group">
                 <label for="post-url">칼로리</label>
                 <input id="input_food_kcal" class="form-control" placeholder="0000Kcal">
@@ -303,7 +270,6 @@ data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_k
             <div id="file-js-example" class="file has-name">
 
                 <label class="file-label">
-                    <input class="file-input" type="file" name="resume">
                     <input class="file-input" id="file" type="file" name="resume">
                     <span class="file-cta">
       <span class="file-icon">
@@ -326,57 +292,8 @@ data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_k
 
 </div>
 
-<div id="cards-box" class="card-columns">
-                <div class="card">
-                    <img class="card-img-top"
-                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-                         alt="Card image cap">
-                    <div class="card-body">
-                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top"
-                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-                         alt="Card image cap">
-                    <div class="card-body">
-                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top"
-                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-                         alt="Card image cap">
-                    <div class="card-body">
-                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top"
-                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-                         alt="Card image cap">
-                    <div class="card-body">
-                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top"
-                         src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-                         alt="Card image cap">
-                    <div class="card-body">
-                        <a target="_blank" href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                        <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                        <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-                    </div>
-                </div>
+<section class="section_card">
+    <div id="cards-box" class="row row-cols-1 row-cols-md-3 g-4">
                 <div class="card">
                     <img class="card-img-top"
                          src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
@@ -388,6 +305,8 @@ data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_k
                     </div>
                 </div>
             </div>
+</section>
+
 
 <script>
     const fileInput = document.querySelector('#file-js-example input[type=file]');
@@ -401,4 +320,3 @@ data: {foodName_give: food_name, foodDate_give: food_date, foodKcal_give: food_k
 </body>
 
 </html>
-
