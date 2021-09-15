@@ -175,19 +175,18 @@
                 $("#goal_cal").focus()
                 return;
             }
-
-
             $.ajax({
                 type: "POST",
                 url: "/api/profile_post",
-                data: {myid_give: "stravinest", heigt_give: height, weight_give: weight, goal_cal_give: goal_cal},
+                data: {myid_give: "{{ userid }}", heigt_give: height, weight_give: weight, goal_cal_give: goal_cal},
                 success: function (response) {
                     alert(response["msg"])
-                    window.location.reload()
+                    window.location.href = "/profile?status_give=old"
                 }
             });
         }
 
+        //수정
         function adjusing() {
             let height = $('#height').val()
             let weight = $("#weight").val()
@@ -210,11 +209,11 @@
             $.ajax({
                 type: "POST",
                 url: "/api/profile_adjust",
-                data: {myid_give: "stravinest", heigt_give: height, weight_give: weight, goal_cal_give: goal_cal},
+                data: {myid_give: "{{ userid }}", heigt_give: height, weight_give: weight, goal_cal_give: goal_cal},
                 success: function (response) {
                     alert("수정되었습니다.")
-                    window.location.reload()
-                    listing();
+                    window.location.href = "/profile?status_give=old"
+
 
                 }
             });
@@ -223,32 +222,41 @@
         function listing() {
             $.ajax({
                 type: "GET",
-                url: "/api/profile?myid=stravinest",
+                url: "/api/profile?myid={{ userid }}",
                 data: {},
                 success: function (response) {
                     let profiles = response['profiles']
-
-                    for (let i = 0; i < profiles.length; i++) {
-                        let height = profiles[i]['height']
-                        let weight = profiles[i]['weight']
-                        let goal_cal = profiles[i]['goal_cal']
-                        let bmiscore = profiles[i]['bmiscore']
-                        let bmi = profiles[i]['bmi']
-                        let bmicolor = ""
-                        if (bmi == "정상") {
-                            bmicolor = "color:green"
-                        } else if (bmi == "저체중") {
-                            bmicolor = "color:blue"
-                        } else {
-                            bmicolor = "color:red"
-                        }
-
-                        let temp_html = `<li >키 :${height}&nbsp;&nbsp;&nbsp;</li>
+                    let status = response['status']
+                    let userid = "{{ userid }}"
+                    console.log(userid)
+                    console.log(profiles)
+                    console.log(status)
+                    if (status == 'old') {
+                        for (let i = 0; i < profiles.length; i++) {
+                            let height = profiles[i]['height']
+                            let weight = profiles[i]['weight']
+                            let goal_cal = profiles[i]['goal_cal']
+                            let bmiscore = profiles[i]['bmiscore']
+                            let bmi = profiles[i]['bmi']
+                            let bmicolor = ""
+                            if (bmi == "정상") {
+                                bmicolor = "color:green"
+                            } else if (bmi == "저체중") {
+                                bmicolor = "color:blue"
+                            } else {
+                                bmicolor = "color:red"
+                            }
+                            let temp_html = `<li >${userid}님의 프로필&nbsp;&nbsp;&nbsp;</li><li >키 :${height}&nbsp;&nbsp;&nbsp;</li>
 <li >몸무게 : ${weight}&nbsp;&nbsp;&nbsp;</li>
 <li >일일 최대 섭취 칼로리 : ${goal_cal}&nbsp;&nbsp;&nbsp;</li>
 <li >bmi : ${bmiscore} <span style=${bmicolor}> ${bmi}</span >&nbsp;&nbsp;&nbsp;</li>
                             `
+                            $('#tbody-box').append(temp_html)
+                        }
+                    } else {
+                        let temp_html = `<li >${userid}님! 프로필을 입력해주세요!!&nbsp;&nbsp;&nbsp;</li>`
                         $('#tbody-box').append(temp_html)
+
                     }
                 }
             })
@@ -283,7 +291,6 @@
                     //
                     // }
                     // console.log(sum)
-
                     for (let i = 0; i < foods.length; i++) {
                         let food_name = foods[i]['food_name']
                         let food_date = foods[i]['food_date']
@@ -305,6 +312,11 @@
             })
         }
 
+        function logout() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/login"
+        }
 
     </script>
 
@@ -338,7 +350,7 @@
                 <a class="button btn_mypage" onclick="openmain()">
                     <strong>오늘의칼로리</strong>
                 </a>
-                <a class="button is-light">
+                <a class="button is-light" onclick="logout()">
                     Log out
                 </a>
             </div>
@@ -401,25 +413,25 @@
         </div>
 
 
-    <div id="post-box" class="form-post" style="display:none">
-        <div>
-            <div class="form-group">
-                <label for="height">키cm</label>
-                <input id="height" class="form-control" placeholder="0000">
-            </div>
-            <div class="form-group">
-                <label for="weight">몸무게</label>
-                <input id="weight" class="form-control" placeholder="0000">
-            </div>
-            <div class="form-group">
-                <label for="goal_cal">하루 목표 칼로리(성인남성:2400,성인여성:2200) </label>
-                <input id="goal_cal" class="form-control" placeholder="0000Kcal">
-            </div>
+        <div id="post-box" class="form-post" style="display:none">
+            <div>
+                <div class="form-group">
+                    <label for="height">키cm</label>
+                    <input id="height" class="form-control" placeholder="0000">
+                </div>
+                <div class="form-group">
+                    <label for="weight">몸무게</label>
+                    <input id="weight" class="form-control" placeholder="0000">
+                </div>
+                <div class="form-group">
+                    <label for="goal_cal">하루 목표 칼로리(성인남성:2400,성인여성:2200) </label>
+                    <input id="goal_cal" class="form-control" placeholder="0000Kcal">
+                </div>
 
 
-            <button type="button" class="btn btn-primary btn_register" onclick="adjusing()">수정</button>
+                <button type="button" class="btn btn-primary btn_register" onclick="adjusing()">수정</button>
+            </div>
         </div>
-    </div>
     {% endif %}
 </div>
 

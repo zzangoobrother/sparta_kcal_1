@@ -129,12 +129,33 @@ def show_diary():
 
     return jsonify({'all_foods': foodInfos})
 
+# 오늘의 프로필로 보내기
+@app.route('/api/send', methods=['GET'])
+def send():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    print(payload['id'])
+    profiles = list(db.todayKcal.find({"myid": payload['id']}, {'_id': False}))
+    if (profiles == []):
+        status = 'new'
+    else:
+        status = 'old'
+    print(status)
+    return jsonify({'status': status})
 
 # 오늘의프로필 페이지
 @app.route('/profile')
 def profile():
-    status_receive = request.args.get("status_give","old")
-    return render_template("profile.html",status=status_receive)
+    status_receive = request.args.get("status_give")
+    print(status_receive)
+
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+
+    username_receive = request.args.get("username_give")
+    print(payload['id'])
+
+    return render_template("profile.html",status=status_receive,userid=payload['id'])
 
 
 # 오늘의프로필등록
@@ -174,9 +195,16 @@ def save_profile():
 # 오늘의 프로필 리스팅
 @app.route('/api/profile', methods=['GET'])
 def show_profile():
+    status_receive = request.args.get("status_give")
     myid_receive = request.args.get("myid")
+    print(status_receive)
     profiles = list(db.todayKcal.find({"myid": myid_receive}, {'_id': False}))
-    return jsonify({'profiles': profiles})
+    if (profiles==[]):
+        status='new'
+    else:
+        status='old'
+    print(status)
+    return jsonify({'profiles': profiles,'status':status})
 
 
 @app.route('/api/profile_cal', methods=['GET'])

@@ -192,6 +192,19 @@
                }
            })
         }
+        function send(){
+             $.ajax({
+                type: "GET",
+                url: "/api/send",
+                data: {},
+                success: function (response) {
+                    let status = response["status"]
+                    window.location.href = "/profile?status_give="+status
+                }
+            });
+
+
+        }
     </script>
     <script src="../../../React/dream_react/template/src/components/nav.jsx"></script>
 
@@ -220,8 +233,8 @@
 
     <div class="navbar-end">
         <div class="navbar-item">
-            <div class="buttons">
-                <a href="/profile" class="button btn_mypage">
+            <div class="buttons" onclick="send()">
+                <a class="button btn_mypage">
                     <strong>My Page</strong>
                 </a>
                 <a class="button is-light">
