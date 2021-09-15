@@ -14,7 +14,6 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
-
 # client = MongoClient('localhost', 27017)
 # db = client.todayKcal
 
@@ -66,16 +65,19 @@ def sign_in():
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
+
 # 회원가입페이지
 @app.route('/member/join')
 def member_join():
     return render_template("join.html")
+
 
 @app.route('/member/check', methods=['POST'])
 def check_dup():
     username_receive = request.form['username_give']
     exists = bool(db.users.find_one({"username": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
+
 
 @app.route('/mamber/join', methods=['POST'])
 def sign_up():
@@ -84,12 +86,13 @@ def sign_up():
     password_receive = request.form['password_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
     doc = {
-        "username": username_receive,                               # 아이디
-        "password": password_hash,                                  # 비밀번호
-        "nickname": nickname_receive,                               # 닉네임
+        "username": username_receive,  # 아이디
+        "password": password_hash,  # 비밀번호
+        "nickname": nickname_receive,  # 닉네임
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
+
 
 @app.route('/main', methods=['POST'])
 def write_review():
@@ -129,6 +132,7 @@ def show_diary():
 
     return jsonify({'all_foods': foodInfos})
 
+
 # 오늘의 프로필로 보내기
 @app.route('/api/send', methods=['GET'])
 def send():
@@ -143,6 +147,7 @@ def send():
     print(status)
     return jsonify({'status': status})
 
+
 # 오늘의프로필 페이지
 @app.route('/profile')
 def profile():
@@ -155,7 +160,7 @@ def profile():
     username_receive = request.args.get("username_give")
     print(payload['id'])
 
-    return render_template("profile.html",status=status_receive,userid=payload['id'])
+    return render_template("profile.html", status=status_receive, userid=payload['id'])
 
 
 # 오늘의프로필등록
@@ -199,23 +204,21 @@ def show_profile():
     myid_receive = request.args.get("myid")
     print(status_receive)
     profiles = list(db.todayKcal.find({"myid": myid_receive}, {'_id': False}))
-    if (profiles==[]):
-        status='new'
+    if (profiles == []):
+        status = 'new'
     else:
-        status='old'
+        status = 'old'
     print(status)
-    return jsonify({'profiles': profiles,'status':status})
+    return jsonify({'profiles': profiles, 'status': status})
 
 
 @app.route('/api/profile_cal', methods=['GET'])
 def show_profile_cal():
-
-   # foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+    # foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
     foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
-    cal = list(db.foodInfo.find({"food_date":foodInfos[0]["food_date"]}, {'_id': False}))
+    cal = list(db.foodInfo.find({"food_date": foodInfos[0]["food_date"]}, {'_id': False}))
 
-
-    return jsonify({'all_foods': foodInfos,'sum_cal':cal})
+    return jsonify({'all_foods': foodInfos, 'sum_cal': cal})
 
 
 # 오늘의 프로필 수정
@@ -249,6 +252,12 @@ def update_profile():
 
     return jsonify({'result': 'success'})
 
+
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return response
+#오류 뜸
 
 if __name__ == '__main__':
     app.run(debug=True)
