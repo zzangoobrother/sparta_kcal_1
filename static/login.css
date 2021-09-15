@@ -40,7 +40,7 @@
 
 /*로그인*/
 .login {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 legend,
@@ -64,7 +64,6 @@ fieldset {
     justify-content: center;
     align-content: center;
     flex-wrap: wrap;
-    /*border: 1px solid;*/
 }
 
 .login span {
@@ -98,7 +97,7 @@ input {
 /* 비밀번호 */
 .pw-section {
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 .pw-section .fa-lock {
     position: absolute;
@@ -111,6 +110,23 @@ input {
     border-radius: 0 0 6px 6px ;
 }
 
+/*아이디 비멀번호 확인*/
+.info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*width: 300px;*/
+    /*height: 100px;*/
+    margin-bottom: 20px;
+}
+
+.info p {
+    size: 30px;
+    color: #e8344e;
+}
+
+/*로그인버튼*/
+
 .btn-section button {
     /*margin: 0 10px;*/
     width: 400px;
@@ -121,9 +137,9 @@ input {
     cursor: pointer;
 }
 
-button:disabled {
-    background-color: #999;
-}
+/*button:disabled {*/
+/*    background-color: #999;*/
+/*}*/
 
 /*회원가입*/
 .join {
