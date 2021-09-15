@@ -14,6 +14,10 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
+
+# client = MongoClient('localhost', 27017)
+# db = client.todayKcal
+
 client = MongoClient('13.209.47.121', 27017, username="test", password="test")
 db = client.dbsparta_1stminiproject
 
@@ -62,6 +66,30 @@ def sign_in():
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
+# 회원가입페이지
+@app.route('/member/join')
+def member_join():
+    return render_template("join.html")
+
+@app.route('/member/check', methods=['POST'])
+def check_dup():
+    username_receive = request.form['username_give']
+    exists = bool(db.users.find_one({"username": username_receive}))
+    return jsonify({'result': 'success', 'exists': exists})
+
+@app.route('/mamber/join', methods=['POST'])
+def sign_up():
+    username_receive = request.form['username_give']
+    nickname_receive = request.form['nickname_give']
+    password_receive = request.form['password_give']
+    password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+    doc = {
+        "username": username_receive,                               # 아이디
+        "password": password_hash,                                  # 비밀번호
+        "nickname": nickname_receive,                               # 닉네임
+    }
+    db.users.insert_one(doc)
+    return jsonify({'result': 'success'})
 
 @app.route('/main', methods=['POST'])
 def write_review():
