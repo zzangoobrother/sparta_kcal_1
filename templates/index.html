@@ -115,7 +115,7 @@
     <script>
 
 
-
+        let main_user;
 
 
         $(document).ready(function () {
@@ -173,6 +173,7 @@
             form_data.append("foodName_give", food_name)
             form_data.append("foodDate_give", food_date)
             form_data.append("foodKcal_give", food_kcal)
+            form_data.append("main_user", main_user)
             form_data.append("now_give", now)
 
 
@@ -200,11 +201,22 @@
                data: {},
                success: function (response) {
                    let foods = response['all_foods']
+                   let user = response['user']
+
+                    for (let i=0; i<user.length;i++){
+                        if ('{{ user_info }}'==user[i]['username']) {
+                            main_user = user[i]['nickname'];
+                            console.log(main_user)
+                        }
+                    }
+
+
                    for (let i = 0; i < foods.length; i++) {
                        let food_name = foods[i]['food_name']
                        let food_date = foods[i]['food_date']
                        let food_kcal = foods[i]['food_kcal']
                        let file = foods[i]['file']
+                       let user_nick = foods[i]['user_nick']
 
 
                        let temp_html = `<div class="card card_made">
@@ -212,6 +224,7 @@
                                                     src="../static/img/${file}"
                                                     alt="Card image cap">
                                                <div class="card-body">
+                                                   <p class="card-text comment">닉네임: ${user_nick}</p>
                                                    <a class="card-title">${food_name}</a>
                                                     <p class="card-text">날짜: ${food_date}</p>
                                                    <p class="card-text comment">${food_kcal} Kcal</p>

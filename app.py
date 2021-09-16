@@ -110,6 +110,7 @@ def write_review():
         foodKcal_receive = request.form['foodKcal_give']
         now_receive = request.form['now_give']
         userinfo_receive = request.form['userinfo_give']
+        mainUser_receive = request.form['main_user']
         print(userinfo_receive)
 
         file = request.files["file_give"]
@@ -125,6 +126,7 @@ def write_review():
         doc = {
             'user_info': userinfo_receive,
             'food_name': foodName_receive,
+            'user_nick': mainUser_receive,
             'food_date': foodDate_receive,
             'food_kcal': int(foodKcal_receive),
             'file': f'{filename}.{extension}',
@@ -141,9 +143,10 @@ def write_review():
 @app.route('/index', methods=['GET'])
 def show_diary():
     user_info_receive = request.args.get("user_info")
-    foodInfos = list(db.foodInfo.find({"user_info": user_info_receive}, {'_id': False}).sort("now", -1))
+    foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+    user_nick = list(db.users.find({}, {'_id': False}))
 
-    return jsonify({'all_foods': foodInfos})
+    return jsonify({'all_foods': foodInfos, 'user': user_nick})
 
 # 오늘의 프로필로 보내기
 @app.route('/api/send', methods=['GET'])
@@ -235,13 +238,8 @@ def show_profile_cal():
         token_receive = request.cookies.get('mytoken')
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
-       # foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
         foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
-
-
-
         calKcal = list(db.foodInfo.find({"user_info": payload['id']}, {'_id': False}))
-
 
         return jsonify({'all_foods': foodInfos, 'calKcal': calKcal})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
