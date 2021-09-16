@@ -153,6 +153,7 @@
                 $("#btn-post-box").text("닫기");
             }
         }
+
         function openClose2() {
             if ($("#post-box").css("display") == "block") {
                 $("#post-box").hide();
@@ -280,9 +281,44 @@
             $.ajax({
                 type: "GET",
                 url: "/api/profile_cal",
-                data: {food_date: food_date},
+                data: {},
                 success: function (response) {
                     let foods = response['all_foods']
+                    let kcal = response['calKcal']
+                    let cal_kcal;
+                    let arr_cal = new Array();
+                    let tag =0;
+
+
+                    console.log(kcal);
+                    console.log(!kcal[5]);
+
+                    for (let i = 0; i < kcal.length; i++) {
+                        cal_kcal = 0;
+                        if (!kcal[i + 1]) {
+                            if(tag==0) {
+                                arr_cal[i] = kcal[i]['food_kcal'];
+                            console.log(arr_cal[i], "나는 마지막");
+                            }
+                        } else {
+
+                            if (kcal[i]["food_date"] === kcal[i + 1]["food_date"]) {
+                                cal_kcal = kcal[i]['food_kcal'] + kcal[i + 1]['food_kcal'];
+                                tag=1;
+                                arr_cal[i] = cal_kcal;
+                                console.log(arr_cal[i], "나는 if");
+                            } else {
+                                arr_cal[i] = kcal[i]['food_kcal'];
+                                tag=0;
+                                console.log(arr_cal[i], "나는 else");
+                            }
+                        }
+
+                    }
+
+
+                    console.log(kcal)
+
                     // var sum = new Array()
                     // for ( let i=0;i<foods.length;i++){
                     //     sum[i]=0

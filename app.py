@@ -151,13 +151,15 @@ def send():
     try:
         token_receive = request.cookies.get('mytoken')
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        print(payload['id'])
         profiles = list(db.todayKcal.find({"myid": payload['id']}, {'_id': False}))
+        calKcal = list(db.foodInfo.find({"user_info": payload['id']}, {'_id': False}))
+
+        print(calKcal)
         if (profiles == []):
             status = 'new'
         else:
              status = 'old'
-        print(status)
+
         return jsonify({'status': status})
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
@@ -167,13 +169,12 @@ def send():
 @app.route('/profile')
 def profile():
     status_receive = request.args.get("status_give")
-    print(status_receive)
+
 
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
     username_receive = request.args.get("username_give")
-    print(payload['id'])
 
     return render_template("profile.html",status=status_receive,userid=payload['id'])
 
@@ -229,13 +230,22 @@ def show_profile():
 
 @app.route('/api/profile_cal', methods=['GET'])
 def show_profile_cal():
+    try:
+        print('hello');
+        token_receive = request.cookies.get('mytoken')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
-   # foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
-    foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
-    cal = list(db.foodInfo.find({"food_date":foodInfos[0]["food_date"]}, {'_id': False}))
+       # foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+        foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
 
 
-    return jsonify({'all_foods': foodInfos,'sum_cal':cal})
+
+        calKcal = list(db.foodInfo.find({"user_info": payload['id']}, {'_id': False}))
+
+
+        return jsonify({'all_foods': foodInfos, 'calKcal': calKcal})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 
 # 오늘의 프로필 수정
