@@ -249,6 +249,8 @@ def show_profile():
     return jsonify({'profiles': profiles, 'status': status})
 
 
+
+#프로필 칼로리계산
 @app.route('/api/profile_cal', methods=['GET'])
 def show_profile_cal():
     myid_receive = request.args.get("myid")
@@ -278,6 +280,9 @@ def show_profile_cal():
 
     foodInfos = list(db.foodInfo.find({"user_info":myid_receive}, {'_id': False}).sort("now", -1))
     goal_cal = list(db.todayKcal.find({"myid": myid_receive}, {'_id': False}).sort("now", -1))
+
+    print(goal_cal)
+    print(foodInfos)
 
 
     return jsonify({'all_foods': foodInfos,'date_kalsum':date_kalsum,'goal_cal':goal_cal})
@@ -313,6 +318,17 @@ def update_profile():
     db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'bmiscore': int(bmiscore)}})
 
     return jsonify({'result': 'success'})
+
+#프로필 음식 사진출력
+@app.route('/api/profile_food', methods=['GET'])
+def show_food_cal():
+    myid_receive = request.args.get("myid")
+    print(myid_receive)
+
+    foodInfos = list(db.foodInfo.find({"user_info":myid_receive}, {'_id': False}).sort("now", -1))
+
+    print(foodInfos)
+    return jsonify({'all_foods': foodInfos})
 
 
 @app.after_request
