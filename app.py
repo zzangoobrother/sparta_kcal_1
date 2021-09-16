@@ -14,9 +14,6 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
-# client = MongoClient('localhost', 27017)
-# db = client.todayKcal
-
 client = MongoClient('13.209.47.121', 27017, username="test", password="test")
 db = client.dbsparta_1stminiproject
 
@@ -136,32 +133,36 @@ def show_diary():
 # 오늘의 프로필로 보내기
 @app.route('/api/send', methods=['GET'])
 def send():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    print(payload['id'])
-    profiles = list(db.todayKcal.find({"myid": payload['id']}, {'_id': False}))
-    if (profiles == []):
-        status = 'new'
-    else:
-        status = 'old'
-    print(status)
-    return jsonify({'status': status})
+    try:
+        token_receive = request.cookies.get('mytoken')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        print(payload['id'])
+        profiles = list(db.todayKcal.find({"myid": payload['id']}, {'_id': False}))
+        if (profiles == []):
+            status = 'new'
+        else:
+             status = 'old'
+        print(status)
+        return jsonify({'status': status})
+
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
 
 
 # 오늘의프로필 페이지
 @app.route('/profile')
 def profile():
-    status_receive = request.args.get("status_give")
-    print(status_receive)
-
     token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    try:
+        status_receive = request.args.get("status_give")
+        print(status_receive)
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        print(payload['id'])
+        return render_template("profile.html", status=status_receive, userid=payload['id'])
 
-    username_receive = request.args.get("username_give")
-    print(payload['id'])
-
-    return render_template("profile.html", status=status_receive, userid=payload['id'])
-
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 # 오늘의프로필등록
 @app.route('/api/profile_post', methods=['POST'])
@@ -183,7 +184,7 @@ def save_profile():
     else:
         bmi = "저체중"
 
-    print(bmi)
+
     doc = {
         'myid': myid_receive,
         'height': height_receive,
@@ -202,13 +203,13 @@ def save_profile():
 def show_profile():
     status_receive = request.args.get("status_give")
     myid_receive = request.args.get("myid")
-    print(status_receive)
+    # print(status_receive)
     profiles = list(db.todayKcal.find({"myid": myid_receive}, {'_id': False}))
     if (profiles == []):
         status = 'new'
     else:
         status = 'old'
-    print(status)
+    # print(status)
     return jsonify({'profiles': profiles, 'status': status})
 
 
@@ -217,7 +218,8 @@ def show_profile_cal():
     # foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
     foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
     cal = list(db.foodInfo.find({"food_date": foodInfos[0]["food_date"]}, {'_id': False}))
-
+    # var = db.foodInfo.aggregate([{$group:{_id:"$",}}])
+    # print(var)
     return jsonify({'all_foods': foodInfos, 'sum_cal': cal})
 
 
