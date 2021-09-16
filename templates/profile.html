@@ -155,6 +155,7 @@
         $(document).ready(function () {
             listing();
             showkcal();
+            show_food();
         });
 
         function openmain() {
@@ -286,22 +287,19 @@
         }
 
 
+        function showkcal() {
+            $('#cards-box').empty()
+            $('#sumcal').empty()
 
-
-
-
-            function showkcal() {
-                $('#cards-box').empty()
-                $('#sumcal').empty()
-
-                $.ajax({
-                    type: "GET",
-                    url: "/api/profile_cal?myid={{ userid }}",
-                    data: {},
-                    success: function (response) {
-                        let date_kalsum = response['date_kalsum']
-                        let foods = response['all_foods']
-                        let goal_cal = response['goal_cal']
+            $.ajax({
+                type: "GET",
+                url: "/api/profile_cal?myid={{ userid }}",
+                data: {},
+                success: function (response) {
+                    let date_kalsum = response['date_kalsum']
+                    let goal_cal = response['goal_cal']
+                    console.log(goal_cal)
+                    if (goal_cal != "") {
                         let goal = goal_cal[0]['goal_cal']
 
                         let userid = "{{ userid }}"
@@ -315,7 +313,7 @@
                                 let temp_html = `<div class="calsum">
   <div class="container">
     <p >${day} ${userid}님의 총 섭취 칼로리는 <span style="color: #fcc419">${day_cal} </span> 입니다.!</p>
-<p>목표칼로리인 ${goal} 보다 ${dis} <span style="color: red">초과 되었습니다.</span><p>
+<p>목표칼로리인 ${goal} 보다 ${dis} <span style="color: red">초과 되었습니다.<p>
 
   </div>
 </div>
@@ -325,7 +323,7 @@
                                 let temp_html = `<div class="calsum">
   <div class="container">
     <p >${day} ${userid}님의 총 섭취 칼로리는 <span style="color: #fcc419">${day_cal} </span> 입니다.!</p>
-<p>목표칼로리인 ${goal} 보다 <span style="color: #72a772">낮습니다.</span> <p>
+<p>목표칼로리인 ${goal} 보다 낮습니다. <p>
 
   </div>
 </div>
@@ -336,13 +334,29 @@
 
                             {#$('#sumcal').append(temp_html)#}
                         }
+                    } else {
+                        return
 
-                        for (let i = 0; i < foods.length; i++) {
-                            let food_name = foods[i]['food_name']
-                            let food_date = foods[i]['food_date']
-                            let food_kcal = foods[i]['food_kcal']
-                            let file = foods[i]['file']
-                            let temp_html = `<div class="card card_made">
+                    }
+
+                }
+            })
+        }
+
+        function show_food() {
+            $("#cards-box").empty()
+            $.ajax({
+                type: "GET",
+                url: "/api/profile_food?myid={{ userid }}",
+                data: {},
+                success: function (response) {
+                    let foods = response['all_foods']
+                    for (let i = 0; i < foods.length; i++) {
+                        let food_name = foods[i]['food_name']
+                        let food_date = foods[i]['food_date']
+                        let food_kcal = foods[i]['food_kcal']
+                        let file = foods[i]['file']
+                        let temp_html = `<div class="card card_made">
                                                <img class="card-img-top card_img"
                                                     src="../static/img/${file}"
                                                     alt="Card image cap">
@@ -352,11 +366,11 @@
                                                    <p class="card-text comment">${food_kcal} Kcal</p>
                                                </div>
                                            </div>`
-                            $('#cards-box').append(temp_html)
-                        }
+                        $('#cards-box').append(temp_html)
                     }
-                })
-            }
+                }
+            });
+        }
 
         function logout() {
             $.removeCookie('mytoken', {path: '/'});
