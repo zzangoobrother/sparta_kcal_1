@@ -14,8 +14,10 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
+
 # client = MongoClient('localhost', 27017)
 # db = client.todayKcal
+
 
 client = MongoClient('13.209.47.121', 27017, username="test", password="test")
 db = client.dbsparta_1stminiproject
@@ -27,7 +29,9 @@ def home():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.users.find_one({"username": payload["id"]})
-        return render_template('index.html', user_info=user_info)
+        #user_info가 index에 넘어감
+        return render_template('index.html', user_info=payload["id"])
+
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
@@ -65,6 +69,7 @@ def sign_in():
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
+
 # 회원가입페이지
 @app.route('/member/join')
 def member_join():
@@ -74,6 +79,12 @@ def member_join():
 def check_dup():
     username_receive = request.form['username_give']
     exists = bool(db.users.find_one({"username": username_receive}))
+    return jsonify({'result': 'success', 'exists': exists})
+
+@app.route('/member/checknickname', methods=['POST'])
+def check_nick():
+    nickname_receive = request.form['nickname_give']
+    exists = bool(db.users.find_one({"nickname": nickname_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
 @app.route('/mamber/join', methods=['POST'])
@@ -87,6 +98,10 @@ def sign_up():
     if exists:
         return jsonify({'result': 'success', 'exists': exists});
 
+    exists_nick = bool(db.users.find_one({"nickname": nickname_receive}))
+    if exists_nick:
+        return jsonify({'result': 'success', 'exists_nick': exists_nick})
+
     doc = {
         "username": username_receive,                               # 아이디
         "password": password_hash,                                  # 비밀번호
@@ -95,72 +110,95 @@ def sign_up():
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
 
-@app.route('/main', methods=['POST'])
+
+#음식정보 입력
+@app.route('/index', methods=['POST'])
 def write_review():
-    foodName_receive = request.form['foodName_give']
-    foodDate_receive = request.form['foodDate_give']
-    foodKcal_receive = request.form['foodKcal_give']
-    now_receive = request.form['now_give']
+    token_receive = request.cookies.get('mytoken')  # 쿠키를 항상 가져 옴
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.users.find_one({"username": payload["id"]})  # 유저 정보를 항상 알 수 있음
 
-    print(foodDate_receive)
+        foodName_receive = request.form['foodName_give']
+        foodDate_receive = request.form['foodDate_give']
+        foodKcal_receive = request.form['foodKcal_give']
+        now_receive = request.form['now_give']
+        userinfo_receive = request.form['userinfo_give']
+        mainUser_receive = request.form['main_user']
+        print(userinfo_receive)
 
-    file = request.files["file_give"]
+        file = request.files["file_give"]
 
-    extension = file.filename.split('.')[-1]
-    today = datetime.now()
-    mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+        extension = file.filename.split('.')[-1]
+        today = datetime.now()
+        mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
 
-    filename = f'file-{mytime}'
-    save_to = f'static/img/{filename}.{extension}'
-    file.save(save_to)
+        filename = f'file-{mytime}'
+        save_to = f'static/img/{filename}.{extension}'
+        file.save(save_to)
 
-    doc = {
-        'food_name': foodName_receive,
-        'food_date': foodDate_receive,
-        'food_kcal': int(foodKcal_receive),
-        'file': f'{filename}.{extension}',
-        'now': now_receive,
-    }
+        doc = {
+            'user_info': userinfo_receive,
+            'food_name': foodName_receive,
+            'user_nick': mainUser_receive,
+            'food_date': foodDate_receive,
+            'food_kcal': int(foodKcal_receive),
+            'file': f'{filename}.{extension}',
+            'now': now_receive
+        }
 
-    db.foodInfo.insert_one(doc)
+        db.foodInfo.insert_one(doc)
 
-    return jsonify({'msg': '저장 완료!'})
+        return jsonify({'msg': '저장 완료!'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 
-@app.route('/main', methods=['GET'])
+
+#음식정보 받기
+
+@app.route('/index', methods=['GET'])
 def show_diary():
+    user_info_receive = request.args.get("user_info")
     foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+    user_nick = list(db.users.find({}, {'_id': False}))
 
-    return jsonify({'all_foods': foodInfos})
+    return jsonify({'all_foods': foodInfos, 'user': user_nick})
+
 
 # 오늘의 프로필로 보내기
 @app.route('/api/send', methods=['GET'])
 def send():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    print(payload['id'])
-    profiles = list(db.todayKcal.find({"myid": payload['id']}, {'_id': False}))
-    if (profiles == []):
-        status = 'new'
-    else:
-        status = 'old'
-    print(status)
-    return jsonify({'status': status})
+    try:
+        token_receive = request.cookies.get('mytoken')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        print(payload['id'])
+        profiles = list(db.todayKcal.find({"myid": payload['id']}, {'_id': False}))
+        if (profiles == []):
+            status = 'new'
+        else:
+             status = 'old'
+        print(status)
+        return jsonify({'status': status})
+
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
 
 # 오늘의프로필 페이지
 @app.route('/profile')
 def profile():
-    status_receive = request.args.get("status_give")
-    print(status_receive)
-
     token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    try:
+        status_receive = request.args.get("status_give")
+        print(status_receive)
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        print(payload['id'])
+        return render_template("profile.html", status=status_receive, userid=payload['id'])
 
-    username_receive = request.args.get("username_give")
-    print(payload['id'])
-
-    return render_template("profile.html",status=status_receive,userid=payload['id'])
-
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 # 오늘의프로필등록
 @app.route('/api/profile_post', methods=['POST'])
@@ -182,14 +220,14 @@ def save_profile():
     else:
         bmi = "저체중"
 
-    print(bmi)
+
     doc = {
         'myid': myid_receive,
-        'height': height_receive,
-        'weight': weight_receive,
-        'goal_cal': goal_cal_receive,
+        'height': int(height_receive),
+        'weight': int(weight_receive),
+        'goal_cal': int(goal_cal_receive),
         'bmi': bmi,
-        'bmiscore': bmiscore
+        'bmiscore': int(bmiscore)
     }
     db.todayKcal.insert_one(doc)
 
@@ -201,25 +239,48 @@ def save_profile():
 def show_profile():
     status_receive = request.args.get("status_give")
     myid_receive = request.args.get("myid")
-    print(status_receive)
+    # print(status_receive)
     profiles = list(db.todayKcal.find({"myid": myid_receive}, {'_id': False}))
-    if (profiles==[]):
-        status='new'
+    if (profiles == []):
+        status = 'new'
     else:
-        status='old'
-    print(status)
-    return jsonify({'profiles': profiles,'status':status})
+        status = 'old'
+    # print(status)
+    return jsonify({'profiles': profiles, 'status': status})
 
 
 @app.route('/api/profile_cal', methods=['GET'])
 def show_profile_cal():
+    myid_receive = request.args.get("myid")
+    print(myid_receive)
+    agg_result = db.foodInfo.aggregate(
+        [
+            {
+                "$match": {'user_info': myid_receive}
+            },
+            {
+            "$group":
+                {
+                "_id":{"user_id":"$user_info",
+                       "date":"$food_date"},
+                 "total": {"$sum": "$food_kcal"}
+                 }},
+            {
+                "$sort": {"date": -1}
+            },
 
-   # foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
-    foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
-    cal = list(db.foodInfo.find({"food_date":foodInfos[0]["food_date"]}, {'_id': False}))
+
+        ])
+
+    date_kalsum= list(agg_result)
+    print(date_kalsum)
 
 
-    return jsonify({'all_foods': foodInfos,'sum_cal':cal})
+    foodInfos = list(db.foodInfo.find({"user_info":myid_receive}, {'_id': False}).sort("now", -1))
+    goal_cal = list(db.todayKcal.find({"myid": myid_receive}, {'_id': False}).sort("now", -1))
+
+
+    return jsonify({'all_foods': foodInfos,'date_kalsum':date_kalsum,'goal_cal':goal_cal})
 
 
 # 오늘의 프로필 수정
@@ -245,14 +306,20 @@ def update_profile():
     print(myid_receive)
     print(height_receive)
 
-    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'height': height_receive}})
-    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'weight': weight_receive}})
-    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'goal_cal': goal_cal_receive}})
+    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'height': int(height_receive)}})
+    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'weight': int(weight_receive)}})
+    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'goal_cal': int(goal_cal_receive)}})
     db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'bmi': bmi}})
-    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'bmiscore': bmiscore}})
+    db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'bmiscore': int(bmiscore)}})
 
     return jsonify({'result': 'success'})
 
+
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return response
+#오류 뜸
 
 if __name__ == '__main__':
     app.run(debug=True)

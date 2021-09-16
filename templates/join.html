@@ -155,8 +155,42 @@
                         $("#help-id").removeClass("is-loading")
                         return;
                     }
+
+                    if (response["exists_nick"]) {
+                        $("#help-nickname").text("이미 존재하는 닉네임입니다.").removeClass("is-safe").addClass("is-danger")
+                        $("#input-nickname").focus()
+                        $("#help-nickname").removeClass("is-loading")
+                        return;
+                    }
                     alert("회원가입 완료")
                     window.location.replace("/login")
+                }
+            });
+        }
+
+        function nicknamecheck() {
+            let nickname = $("#input-nickname").val()
+            if (nickname == "") {
+                $("#help-nickname").text("닉네임을 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                $("#input-nickname").focus()
+                return;
+            }
+
+            $("#help-id").addClass("is-loading")
+            $.ajax({
+                type: "POST",
+                url: "/member/checknickname",
+                data: {
+                    nickname_give: nickname
+                },
+                success: function (response) {
+                    if (response["exists"]) {
+                        $("#help-nickname").text("이미 존재하는 닉네임입니다.").removeClass("is-safe").addClass("is-danger")
+                    } else {
+                        $("#help-nickname").text("사용할 수 있는 닉네임입니다.").removeClass("is-danger").addClass("is-success")
+                    }
+                    $("#help-nickname").removeClass("is-loading")
+
                 }
             });
         }
@@ -184,11 +218,12 @@
 
                         <div class="field has-addons">
                             <div class="control has-icons-left" style="width:100%">
-                                <input id="input-nickname" class="input" type="text" placeholder="닉네임">
-                                <span class="icon is-small is-left"><i class="fa fa-user"></i></span>
+                                <input id="input-nickname" class="input" type="text" placeholder="닉네임" onkeyup="nicknamecheck()">
+                                <p id="help-nickname" class="help"></p>
+                                <p id="help-id-login" class="help is-danger"></p>
                             </div>
                         </div>
-                        <p id="help-id-login" class="help is-danger"></p>
+                        <p id="help-id-login2" class="help is-danger"></p>
 
                         <div class="field">
                             <div class="control has-icons-left">
