@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc0de498-9247-484b-8a2a-65cdeadbbb5a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/static/img/file-2021-09-16-21-22-43.PNG" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/banner.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/banner.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/profile.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -107,7 +107,7 @@
       <workItem from="1631663899798" duration="7136000" />
       <workItem from="1631672831427" duration="4860000" />
       <workItem from="1631750105006" duration="3105000" />
-      <workItem from="1631786274072" duration="6248000" />
+      <workItem from="1631786274072" duration="7247000" />
     </task>
     <servers />
   </component>
