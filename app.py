@@ -14,6 +14,11 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
+
+# client = MongoClient('localhost', 27017)
+# db = client.todayKcal
+
+
 client = MongoClient('13.209.47.121', 27017, username="test", password="test")
 db = client.dbsparta_1stminiproject
 
@@ -82,6 +87,11 @@ def sign_up():
     nickname_receive = request.form['nickname_give']
     password_receive = request.form['password_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+
+    exists = bool(db.users.find_one({"username": username_receive}))
+    if exists:
+        return jsonify({'result': 'success', 'exists': exists});
+
     doc = {
         "username": username_receive,  # 아이디
         "password": password_hash,  # 비밀번호
