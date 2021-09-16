@@ -27,7 +27,9 @@ def home():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.users.find_one({"username": payload["id"]})
-        return render_template('index.html', user_info=user_info)
+        #user_info가 index에 넘어감
+        return render_template('index.html', user_info=payload["id"])
+
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
@@ -95,41 +97,51 @@ def sign_up():
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
 
-@app.route('/main', methods=['POST'])
+#음식정보 입력
+@app.route('/index', methods=['POST'])
 def write_review():
-    foodName_receive = request.form['foodName_give']
-    foodDate_receive = request.form['foodDate_give']
-    foodKcal_receive = request.form['foodKcal_give']
-    now_receive = request.form['now_give']
+    token_receive = request.cookies.get('mytoken')  # 쿠키를 항상 가져 옴
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.users.find_one({"username": payload["id"]})  # 유저 정보를 항상 알 수 있음
 
-    print(foodDate_receive)
+        foodName_receive = request.form['foodName_give']
+        foodDate_receive = request.form['foodDate_give']
+        foodKcal_receive = request.form['foodKcal_give']
+        now_receive = request.form['now_give']
+        userinfo_receive = request.form['userinfo_give']
+        print(userinfo_receive)
 
-    file = request.files["file_give"]
+        file = request.files["file_give"]
 
-    extension = file.filename.split('.')[-1]
-    today = datetime.now()
-    mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+        extension = file.filename.split('.')[-1]
+        today = datetime.now()
+        mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
 
-    filename = f'file-{mytime}'
-    save_to = f'static/img/{filename}.{extension}'
-    file.save(save_to)
+        filename = f'file-{mytime}'
+        save_to = f'static/img/{filename}.{extension}'
+        file.save(save_to)
 
-    doc = {
-        'food_name': foodName_receive,
-        'food_date': foodDate_receive,
-        'food_kcal': int(foodKcal_receive),
-        'file': f'{filename}.{extension}',
-        'now': now_receive,
-    }
+        doc = {
+            'user_info': userinfo_receive,
+            'food_name': foodName_receive,
+            'food_date': foodDate_receive,
+            'food_kcal': int(foodKcal_receive),
+            'file': f'{filename}.{extension}',
+            'now': now_receive,
+        }
 
-    db.foodInfo.insert_one(doc)
+        db.foodInfo.insert_one(doc)
 
-    return jsonify({'msg': '저장 완료!'})
+        return jsonify({'msg': '저장 완료!'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
-
-@app.route('/main', methods=['GET'])
+#음식정보 받기
+@app.route('/index', methods=['GET'])
 def show_diary():
-    foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+    user_info_receive = request.args.get("user_info")
+    foodInfos = list(db.foodInfo.find({"user_info": user_info_receive}, {'_id': False}).sort("now", -1))
 
     return jsonify({'all_foods': foodInfos})
 
