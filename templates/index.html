@@ -3,6 +3,9 @@
 
 <head>
 
+    <!-- 상단주소 아이콘-->
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -116,10 +119,11 @@
 
 
         $(document).ready(function () {
-
             showkcal();
+            console.log('{{ user_info }}')
         });
 
+        {#포스트 열고 닫기#}
         function openClose() {
             if ($("#post-box").css("display") == "block") {
                 $("#post-box").hide();
@@ -130,13 +134,29 @@
             }
         }
 
-
+        {#로그아웃#}
          function sign_out() {
-
             alert('로그아웃!')
         }
 
+        {#마이프로필로 보내기#}
+           function send(){
+             $.ajax({
+                type: "GET",
+                url: "/api/send",
+                data: {},
+                success: function (response) {
+                    let status = response["status"]
+                    window.location.href = "/profile?status_give="+status
+                }
+            });
+
+
+        }
+
+        {#음식 정보 등록#}
         function postFood() {
+            let user_info = '{{ user_info }}';
             let dt =  new Date()
             let date = dt.getFullYear() +"년&nbsp " + (dt.getMonth()+1) +"월&nbsp " + dt.getDate() + "일"
             let now = Date.now();
@@ -148,15 +168,17 @@
             let file = $('#file')[0].files[0]
             let form_data = new FormData()
 
+            form_data.append("userinfo_give", user_info)
             form_data.append("file_give", file)
             form_data.append("foodName_give", food_name)
             form_data.append("foodDate_give", food_date)
             form_data.append("foodKcal_give", food_kcal)
             form_data.append("now_give", now)
 
+
             $.ajax({
                 type: "POST",
-                url: "/main",
+                url: "/index",
                 data: form_data,
                 cache: false,
                 contentType: false,
@@ -169,11 +191,12 @@
         }
 
 
+        {#음식정보 불러오기#}
         function showkcal() {
             $('#cards-box').empty()
            $.ajax({
                type: "GET",
-               url: "/main",
+               url: "/index?user_info={{ user_info }}",
                data: {},
                success: function (response) {
                    let foods = response['all_foods']
@@ -190,7 +213,6 @@
                                                     alt="Card image cap">
                                                <div class="card-body">
                                                    <a class="card-title">${food_name}</a>
-                                                   <p class="card-text">날짜: ${food_date}</p>
                                                    <p class="card-text comment">${food_kcal} Kcal</p>
                                                </div>
                                            </div>`
@@ -199,21 +221,9 @@
                }
            })
         }
-        function send(){
-             $.ajax({
-                type: "GET",
-                url: "/api/send",
-                data: {},
-                success: function (response) {
-                    let status = response["status"]
-                    window.location.href = "/profile?status_give="+status
-                }
-            });
 
-
-        }
     </script>
-    <script src="../../../React/dream_react/template/src/components/nav.jsx"></script>
+
 
 </head>
 
@@ -280,10 +290,6 @@
                 <label for="input_food_name">음식 이름</label>
                 <input id="input_food_name" class="form-control" placeholder="0000">
             </div>
-{#            <div class="form-group">#}
-{#                <label for="input_food_date">날짜</label>#}
-{#                <input id="input_food_date" class="form-control" placeholder="0000/00/00">#}
-{#            </div>#}
             <div class="form-group">
                 <label for="input_food_kcal">칼로리</label>
                 <input id="input_food_kcal" class="form-control" placeholder="0000Kcal">
@@ -298,11 +304,11 @@
         <i class="fas fa-upload"></i>
       </span>
       <span class="file-label">
-        Choose a file...
+        파일 찾기
       </span>
     </span>
                     <span class="file-name">
-      None
+      -------------------------
     </span>
                 </label>
             </div>
@@ -329,7 +335,7 @@
             </div>
 </section>
 
-
+{#파일 첨부를 누르면 그 파일의 이름을 등록칸에 나타내기#}
 <script>
     const fileInput = document.querySelector('#file-js-example input[type=file]');
     fileInput.onchange = () => {

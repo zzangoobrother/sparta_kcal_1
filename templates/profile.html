@@ -5,6 +5,12 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {#    og태그 파비콘#}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="오늘의 칼로리 - 내몸을 건강하게 관리하세요"/>
+    <meta property="og:description" content="1st mini project"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -26,7 +32,7 @@
     <!--벌마 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 
-    <title>스파르타코딩클럽 | 나홀로 메모장</title>
+    <title>으늘의 프로필</title>
 
     <!-- style -->
     <style type="text/css">
@@ -35,6 +41,7 @@
         }
 
         .jumbotron {
+            width: 800px;
             margin-top: 50px;
             background-color: #72a772;
         }
@@ -123,6 +130,10 @@
 
         }
 
+        #sumcal {
+            font-size: xx-large;
+        }
+
         .card_img {
             width: 300px;
             height: 200px;
@@ -130,6 +141,12 @@
 
         .card-body {
             background-color: #ebf6eb;
+        }
+
+        .calsum {
+
+            width: 800px;
+            margin: auto;
         }
 
     </style>
@@ -153,6 +170,7 @@
                 $("#btn-post-box").text("닫기");
             }
         }
+
         function openClose2() {
             if ($("#post-box").css("display") == "block") {
                 $("#post-box").hide();
@@ -222,8 +240,6 @@
                 success: function (response) {
                     alert("수정되었습니다.")
                     window.location.href = "/profile?status_give=old"
-
-
                 }
             });
         }
@@ -237,9 +253,7 @@
                     let profiles = response['profiles']
                     let status = response['status']
                     let userid = "{{ userid }}"
-                    console.log(userid)
-                    console.log(profiles)
-                    console.log(status)
+
                     if (status == 'old') {
                         for (let i = 0; i < profiles.length; i++) {
                             let height = profiles[i]['height']
@@ -271,41 +285,64 @@
             })
         }
 
-        function showkcal() {
-            $('#cards-box').empty()
-            let dt = new Date()
-            let date = dt.getFullYear() + "년&nbsp " + (dt.getMonth() + 1) + "월&nbsp " + dt.getDate() + "일"
-            let food_date = date
 
-            $.ajax({
-                type: "GET",
-                url: "/api/profile_cal",
-                data: {food_date: food_date},
-                success: function (response) {
-                    let foods = response['all_foods']
-                    // var sum = new Array()
-                    // for ( let i=0;i<foods.length;i++){
-                    //     sum[i]=0
-                    // }
-                    // for (let i = 0; i < foods.length; i++) {
-                    //     for (let k = 0; k < foods.length; k++) {
-                    //         if (foods[i]['food_name']==foods[k]['food_name']){
-                    //             console.log(foods[k]['food_kcal'])
-                    //             sum[i]+=(foods[k]['food_kcal'])
-                    //
-                    //         }
-                    //
-                    //
-                    //     }
-                    //
-                    // }
-                    // console.log(sum)
-                    for (let i = 0; i < foods.length; i++) {
-                        let food_name = foods[i]['food_name']
-                        let food_date = foods[i]['food_date']
-                        let food_kcal = foods[i]['food_kcal']
-                        let file = foods[i]['file']
-                        let temp_html = `<div class="card card_made">
+
+
+
+
+            function showkcal() {
+                $('#cards-box').empty()
+                $('#sumcal').empty()
+
+                $.ajax({
+                    type: "GET",
+                    url: "/api/profile_cal?myid={{ userid }}",
+                    data: {},
+                    success: function (response) {
+                        let date_kalsum = response['date_kalsum']
+                        let foods = response['all_foods']
+                        let goal_cal = response['goal_cal']
+                        let goal = goal_cal[0]['goal_cal']
+
+                        let userid = "{{ userid }}"
+
+                        for (let i = 0; i < date_kalsum.length; i++) {
+                            let day_cal = date_kalsum[i]['total']
+                            let day = date_kalsum[i]['_id']['date']
+
+                            if (goal < day_cal) {
+                                let dis = parseInt(day_cal) - parseInt(goal)
+                                let temp_html = `<div class="calsum">
+  <div class="container">
+    <p >${day} ${userid}님의 총 섭취 칼로리는 <span style="color: #fcc419">${day_cal} </span> 입니다.!</p>
+<p>목표칼로리인 ${goal} 보다 ${dis} <span style="color: red">초과 되었습니다.<p>
+
+  </div>
+</div>
+                        `
+                                $('#sumcal').append(temp_html)
+                            } else {
+                                let temp_html = `<div class="calsum">
+  <div class="container">
+    <p >${day} ${userid}님의 총 섭취 칼로리는 <span style="color: #fcc419">${day_cal} </span> 입니다.!</p>
+<p>목표칼로리인 ${goal} 보다 낮습니다. <p>
+
+  </div>
+</div>
+                        `
+
+                                $('#sumcal').append(temp_html)
+                            }
+
+                            {#$('#sumcal').append(temp_html)#}
+                        }
+
+                        for (let i = 0; i < foods.length; i++) {
+                            let food_name = foods[i]['food_name']
+                            let food_date = foods[i]['food_date']
+                            let food_kcal = foods[i]['food_kcal']
+                            let file = foods[i]['file']
+                            let temp_html = `<div class="card card_made">
                                                <img class="card-img-top card_img"
                                                     src="../static/img/${file}"
                                                     alt="Card image cap">
@@ -315,11 +352,11 @@
                                                    <p class="card-text comment">${food_kcal} Kcal</p>
                                                </div>
                                            </div>`
-                        $('#cards-box').append(temp_html)
+                            $('#cards-box').append(temp_html)
+                        }
                     }
-                }
-            })
-        }
+                })
+            }
 
         function logout() {
             $.removeCookie('mytoken', {path: '/'});
@@ -452,6 +489,10 @@
 
     </tbody>
 </table>
+
+<div class="calsum" id="sumcal">
+
+</div>
 
 
 <section class="section_card">
