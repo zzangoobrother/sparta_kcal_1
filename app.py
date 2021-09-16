@@ -19,7 +19,7 @@ SECRET_KEY = 'SPARTA'
 # db = client.todayKcal
 
 
-client = MongoClient('13.209.47.121', 27017, username="test", password="test")
+client = MongoClient('3.34.255.91', 27017, username="test", password="test")
 db = client.dbsparta_1stminiproject
 
 
@@ -338,6 +338,5 @@ def after_request(response):
 #오류 뜸
 
 if __name__ == '__main__':
-    app.run(debug=True)
 
     app.run('0.0.0.0', port=5000, debug=True)
