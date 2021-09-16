@@ -139,6 +139,21 @@
             alert('로그아웃!')
         }
 
+        {#마이프로필로 보내기#}
+           function send(){
+             $.ajax({
+                type: "GET",
+                url: "/api/send",
+                data: {},
+                success: function (response) {
+                    let status = response["status"]
+                    window.location.href = "/profile?status_give="+status
+                }
+            });
+
+
+        }
+
         {#음식 정보 등록#}
         function postFood() {
             let user_info = '{{ user_info }}';
@@ -236,7 +251,7 @@
     <div class="navbar-end">
         <div class="navbar-item">
             <div class="buttons" onclick="send()">
-                <a href="profile" class="button btn_mypage">
+                <a class="button btn_mypage">
                     <strong>My Page</strong>
                 </a>
                 <a href="login" class="button is-light" onclick="sign_out()">

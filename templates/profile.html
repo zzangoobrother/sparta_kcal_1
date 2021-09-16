@@ -153,6 +153,15 @@
                 $("#btn-post-box").text("닫기");
             }
         }
+        function openClose2() {
+            if ($("#post-box").css("display") == "block") {
+                $("#post-box").hide();
+                $("#btn-fix-box").text("수정하기");
+            } else {
+                $("#post-box").show();
+                $("#btn-fix-box").text("닫기");
+            }
+        }
 
 
         //프로필 등록
@@ -382,32 +391,33 @@
                 </button>
             </p>
         </div>
-        <div id="post-box1" class="form-post" style="display:none">
+        <div id="post-box" class="form-post" style="display:none">
             <div>
                 <div class="form-group">
                     <label for="height">키cm</label>
-                    <input id="height1" class="form-control" placeholder="0000">
+                    <input id="height" class="form-control" placeholder="0000">
                 </div>
                 <div class="form-group">
                     <label for="weight">몸무게</label>
-                    <input id="weight1" class="form-control" placeholder="0000">
+                    <input id="weight" class="form-control" placeholder="0000">
                 </div>
                 <div class="form-group">
                     <label for="goal_cal">하루 목표 칼로리(성인남성:2400,성인여성:2200) </label>
-                    <input id="goal_cal1" class="form-control" placeholder="0000Kcal">
+                    <input id="goal_cal" class="form-control" placeholder="0000Kcal">
                 </div>
 
 
                 <button type="button" class="btn btn-primary btn_register" onclick="posting()">등록</button>
             </div>
         </div>
+
     {% else %}
         <div class="jumbotron">
             <h1 class="display-4 text1">프로필 수정기</h1>
             <p class="lead text1">기존 프로필 수정가능합니다.</p>
             <hr class="my-4">
             <p class="lead">
-                <button onclick="openClose()" id="btn-fix-box" type="button" class="btn btn-primary">수정하기
+                <button onclick="openClose2()" id="btn-fix-box" type="button" class="btn btn-primary">수정하기
                 </button>
             </p>
         </div>
@@ -462,4 +472,3 @@
 </body>
 
 </html>
-

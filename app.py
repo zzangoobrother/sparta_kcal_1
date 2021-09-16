@@ -148,16 +148,20 @@ def show_diary():
 # 오늘의 프로필로 보내기
 @app.route('/api/send', methods=['GET'])
 def send():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    print(payload['id'])
-    profiles = list(db.todayKcal.find({"myid": payload['id']}, {'_id': False}))
-    if (profiles == []):
-        status = 'new'
-    else:
-        status = 'old'
-    print(status)
-    return jsonify({'status': status})
+    try:
+        token_receive = request.cookies.get('mytoken')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        print(payload['id'])
+        profiles = list(db.todayKcal.find({"myid": payload['id']}, {'_id': False}))
+        if (profiles == []):
+            status = 'new'
+        else:
+             status = 'old'
+        print(status)
+        return jsonify({'status': status})
+
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 # 오늘의프로필 페이지
 @app.route('/profile')
