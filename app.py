@@ -36,6 +36,12 @@ def home():
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 
+# 로그아웃 뒤로가기 방지
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return response
+
 # 로그인 페이지
 @app.route('/login')
 def login():
