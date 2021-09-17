@@ -321,6 +321,9 @@ def show_profile_cal():
                  "total": {"$sum": "$food_kcal"}
                  }},
             {
+                "$limit": 3
+            },
+            {
                 "$sort": {"date": -1}
             },
 
