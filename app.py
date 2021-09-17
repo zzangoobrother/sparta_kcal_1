@@ -19,7 +19,7 @@ SECRET_KEY = 'SPARTA'
 # db = client.todayKcal
 
 
-client = MongoClient('13.209.47.121', 27017, username="test", password="test")
+client = MongoClient('3.34.255.91', 27017, username="test", password="test")
 db = client.dbsparta_1stminiproject
 
 
