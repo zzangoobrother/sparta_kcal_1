@@ -141,7 +141,7 @@
         }
 
         .comment {
-            color: #396270;
+            color: rgba(61, 77, 96, 0.88);
             font-weight: bold;
         }
 
@@ -181,7 +181,7 @@
         }
 
         .card-body {
-            background-color: #ebf6eb;
+            background-color: #ffffff;
         }
 
         .span_main_check {
@@ -199,12 +199,12 @@
         }
 
         {#모달 css#}
-        #modal.modal-overlay {
+        .modal-overlay {
             width: 100%;
             height: 100%;
-            position: absolute;
+            position: fixed;
             left: 0;
-            top: 0;
+            top: 0px;
             display: none;
             flex-direction: column;
             align-items: center;
@@ -217,21 +217,21 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        #modal .modal-window {
-            background: rgb(235, 246, 235);
+        .modal-window {
+            background: rgb(255, 255, 255);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             backdrop-filter: blur(13.5px);
             -webkit-backdrop-filter: blur(13.5px);
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.18);
-            width: 400px;
-            height: 500px;
+            width: 800px;
+            height: 600px;
             position: relative;
             top: -100px;
             padding: 10px;
         }
 
-        #modal .title {
+         .modal_title {
             padding-left: 10px;
             display: inline;
             text-shadow: 1px 1px 2px gray;
@@ -239,11 +239,12 @@
 
         }
 
-        #modal .title h2 {
+        h2 {
             display: inline;
+            color: rgba(0, 0, 0, 0.88);
         }
 
-        #modal .close-area {
+        .close-area {
             display: inline;
             float: right;
             padding-right: 10px;
@@ -252,21 +253,30 @@
             color: white;
         }
 
-        #modal .content {
-            margin-top: 20px;
+        .content {
+            margin-top: 50px;
             padding: 0px 10px;
             text-shadow: 1px 1px 2px gray;
             color: white;
         }
+        .modal_img {
+            width: 800px;
+            height: 450px;
+        }
+
+
 
     </style>
     <script>
 
         let main_user;
+        let user_nickname;
+
 
         $(document).ready(function () {
             showkcal();
             console.log('{{ user_info }}')
+
         });
 
          function logout() {
@@ -343,6 +353,7 @@
             form_data.append("now_give", now)
 
 
+
             $.ajax({
                 type: "POST",
                 url: "/index",
@@ -384,11 +395,14 @@
                         let food_kcal = foods[i]['food_kcal']
                         let file = foods[i]['file']
                         let user_nick = foods[i]['user_nick']
+                        user_nickname = user_nick
+
 
 
                         let temp_html = `<div class="card card_made">
-                                               <img id="btn-modal"
-                                                    class="card-img-top card_img"
+                                               <img
+                                                    onclick=btn_modal('${file}','${user_nick}')
+                                                    class="card-img-top card_img "
                                                     src="../static/img/${file}"
                                                     alt="Card image cap">
                                                <div class="card-body">
@@ -492,45 +506,67 @@
     </div>
 </section>
 {#모달창#}
+<div class="no_scroll">
 <div id="modal" class="modal-overlay">
-    <div class="modal-window">
-        <div class="title">
-            <h2>모달</h2>
+    <div id ="madal_window"class="modal-window">
+        <div class="modal_title">
+            <h2 id="modal_user_nickname"></h2>
         </div>
         <div class="close-area" onclick="">X</div>
-        <div class="content">
-            <p>가나다라마바사 아자차카타파하</p>
-            <p>가나다라마바사 아자차카타파하</p>
-            <p>가나다라마바사 아자차카타파하</p>
-            <p>가나다라마바사 아자차카타파하</p>
+        <div class="content" id="content">
+
 
         </div>
     </div>
 </div>
+    </div>
 
 <script>
     {#모달 스크립트#}
+    let temp_htmls;
 
-    let scroll_height = document.getElementById("요소ID").scrollTop;
     const modal = document.getElementById("modal")
 
-    const btnModal = document.getElementById("btn-modal")
-    btnModal.addEventListener("click", e => {
-        modal.style.display = "flex"
-    })
+    function btn_modal(file,nick) {
+         console.log('모달 눌림')
+        let scrollLocation = document.documentElement.scrollTop;
+
+
+        temp_htmls = `
+                            <img  class="modal_img" id="modal_img" src="../static/img/${file}" alt="" >
+        `
+
+        $("#modal_user_nickname").text(nick);
+
+        $('#content').append(temp_htmls)
+
+        $("#modal").css({
+            "display": "flex"
+        });
+        $("#modal-overlay").css({
+            "top": scrollLocation
+        })
+
+
+
+    }
     const closeBtn = modal.querySelector(".close-area")
     closeBtn.addEventListener("click", e => {
         modal.style.display = "none"
+        $('#modal_img').remove();
+
     })
     modal.addEventListener("click", e => {
         const evTarget = e.target
         if (evTarget.classList.contains("modal-overlay")) {
             modal.style.display = "none"
+            $('#modal_img').remove();
         }
     })
     window.addEventListener("keyup", e => {
     if(modal.style.display === "flex" && e.key === "Escape") {
         modal.style.display = "none"
+        $('#modal_img').remove();
     }
 })
 
