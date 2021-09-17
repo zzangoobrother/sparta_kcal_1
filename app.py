@@ -330,6 +330,14 @@ def show_food_cal():
     print(foodInfos)
     return jsonify({'all_foods': foodInfos})
 
+@app.route('/api/profile_delete', methods=['POST'])
+def delete_profile():
+    filename_receive = request.form['filename_give']
+    print(filename_receive)
+    result = db.foodInfo.delete_one({'file': filename_receive})
+    print(result)
+    return jsonify({'result': 'success'})
+
 
 @app.after_request
 def after_request(response):
