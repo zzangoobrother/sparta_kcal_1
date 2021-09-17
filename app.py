@@ -125,13 +125,17 @@ def write_review():
         now_receive = request.form['now_give']
         userinfo_receive = request.form['userinfo_give']
         mainUser_receive = request.form['main_user']
-
+        print(userinfo_receive)
 
         file = request.files["file_give"]
 
         extension = file.filename.split('.')[-1]
         today = datetime.now()
         mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+
+        today =int(today.strftime(('%Y%m%d')))
+
+        print(today)
 
         filename = f'file-{mytime}'
         save_to = f'static/img/{filename}.{extension}'
@@ -144,7 +148,8 @@ def write_review():
             'food_date': foodDate_receive,
             'food_kcal': int(foodKcal_receive),
             'file': f'{filename}.{extension}',
-            'now': now_receive
+            'now': now_receive,
+            'today': int(today)
         }
 
         db.foodInfo.insert_one(doc)
@@ -249,43 +254,45 @@ def show_profile():
     return jsonify({'profiles': profiles, 'status': status})
 
 
-
-#프로필 칼로리계산
+# 프로필 칼로리계산
 @app.route('/api/profile_cal', methods=['GET'])
 def show_profile_cal():
     myid_receive = request.args.get("myid")
     print(myid_receive)
+
     agg_result = db.foodInfo.aggregate(
         [
             {
                 "$match": {'user_info': myid_receive}
             },
             {
-            "$group":
-                {
-                "_id":{"user_id":"$user_info",
-                       "date":"$food_date"},
-                 "total": {"$sum": "$food_kcal"}
-                 }},
+                "$group":
+                    {
+                        "_id": {"user_id": "$user_info",
+                                "date": "$food_date",
+
+                                },
+
+                        "total": {"$sum": "$food_kcal"},
+                        "avg": {"$avg": "$today"}
+
+                    }},
             {
-                "$sort": {"date": -1}
+                "$sort": {"avg": -1}
             },
 
+            {
+                "$limit": 3
+            },
 
         ])
 
-    date_kalsum= list(agg_result)
-    print(date_kalsum)
+    date_kalsum = list(agg_result)
 
-
-    foodInfos = list(db.foodInfo.find({"user_info":myid_receive}, {'_id': False}).sort("now", -1))
+    foodInfos = list(db.foodInfo.find({"user_info": myid_receive}, {'_id': False}))
     goal_cal = list(db.todayKcal.find({"myid": myid_receive}, {'_id': False}).sort("now", -1))
 
-    print(goal_cal)
-    print(foodInfos)
-
-
-    return jsonify({'all_foods': foodInfos,'date_kalsum':date_kalsum,'goal_cal':goal_cal})
+    return jsonify({'all_foods': foodInfos, 'date_kalsum': date_kalsum, 'goal_cal': goal_cal})
 
 
 # 오늘의 프로필 수정
