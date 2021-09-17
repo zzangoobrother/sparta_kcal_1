@@ -208,6 +208,17 @@
             margin: auto;
         }
 
+         #btn-post-box {
+            font-weight: bold;
+            margin-top: 10px;
+            width: 400px;
+            padding: 10px;
+            background-color: yellowgreen;
+            border: 0;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
     </style>
     <script>
         //let userid = '{{ userid }}'
@@ -371,8 +382,8 @@
                                 let dis = parseInt(day_cal) - parseInt(goal)
                                 let temp_html = `<div class="calsum">
   <div class="container">
-    <p >${day} ${userid}님의 총 섭취 칼로리는 <span style="color: #fcc419">${day_cal} </span> 입니다.!</p>
-<p>목표칼로리인 ${goal} 보다 ${dis} <span style="color: red">초과 되었습니다.</span><p>
+    <p class="profile_text">${day} ${userid}님의 총 섭취 칼로리는 <span style="color: #fcc419">${day_cal} </span> 입니다.!</p>
+<p class="profile_text">목표칼로리인 ${goal} 보다 ${dis} <span style="color: red">초과 되었습니다.</span></p>
 
   </div>
 </div>
@@ -381,8 +392,8 @@
                             } else {
                                 let temp_html = `<div class="calsum">
   <div class="container">
-    <p >${day} ${userid}님의 총 섭취 칼로리는 <span style="color: #fcc419">${day_cal} </span> 입니다.!</p>
-<p>목표칼로리인 ${goal} 보다 <span style="color: #7ac07a">낮습니다.</span> <p>
+    <p class="profile_text" >${day} ${userid}님의 총 섭취 칼로리는 <span style="color: #fcc419">${day_cal} </span> 입니다.!</p>
+<p class="profile_text">목표칼로리인 ${goal} 보다 <span style="color: #7ac07a">낮습니다.</span> </p>
 
   </div>
 </div>
