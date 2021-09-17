@@ -178,7 +178,9 @@
         .card_img {
             width: 300px;
             height: 200px;
+            cursor: pointer;
         }
+
 
         .card-body {
             background-color: #ffffff;
@@ -227,7 +229,7 @@
             width: 800px;
             height: 600px;
             position: relative;
-            top: -100px;
+
             padding: 10px;
         }
 
@@ -283,6 +285,7 @@
             $.removeCookie('mytoken', {path: '/'});
             alert('로그아웃!')
             window.location.href = "/login"
+             window.location.reload();
         }
 
 
@@ -439,11 +442,11 @@
         </div>
 
     </div>
-    <div class="buttons" onclick="send()">
-        <a class="button btn_mypage">
+    <div class="buttons" >
+        <a class="button btn_mypage" onclick="send()">
             <strong>My Page</strong>
         </a>
-        <a href="login" class="button is-light" onclick="logout()">
+        <a  href="login" class="button is-light" >
             Log out
         </a>
     </div>
