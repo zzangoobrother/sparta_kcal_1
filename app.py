@@ -125,7 +125,7 @@ def write_review():
         now_receive = request.form['now_give']
         userinfo_receive = request.form['userinfo_give']
         mainUser_receive = request.form['main_user']
-        print(userinfo_receive)
+
 
         file = request.files["file_give"]
 

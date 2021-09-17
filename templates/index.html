@@ -199,7 +199,7 @@
         }
 
         {#모달 css#}
-        #modal.modal-overlay {
+        .modal-overlay {
             width: 100%;
             height: 100%;
             position: absolute;
@@ -217,7 +217,7 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        #modal .modal-window {
+        .modal-window {
             background: rgb(235, 246, 235);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             backdrop-filter: blur(13.5px);
@@ -231,7 +231,7 @@
             padding: 10px;
         }
 
-        #modal .title {
+         .modal_title {
             padding-left: 10px;
             display: inline;
             text-shadow: 1px 1px 2px gray;
@@ -239,11 +239,11 @@
 
         }
 
-        #modal .title h2 {
+        h2 {
             display: inline;
         }
 
-        #modal .close-area {
+        .close-area {
             display: inline;
             float: right;
             padding-right: 10px;
@@ -252,7 +252,7 @@
             color: white;
         }
 
-        #modal .content {
+        .content {
             margin-top: 20px;
             padding: 0px 10px;
             text-shadow: 1px 1px 2px gray;
@@ -264,9 +264,11 @@
 
         let main_user;
 
+
         $(document).ready(function () {
             showkcal();
             console.log('{{ user_info }}')
+
         });
 
          function logout() {
@@ -343,6 +345,7 @@
             form_data.append("now_give", now)
 
 
+
             $.ajax({
                 type: "POST",
                 url: "/index",
@@ -387,8 +390,9 @@
 
 
                         let temp_html = `<div class="card card_made">
-                                               <img id="btn-modal"
-                                                    class="card-img-top card_img"
+                                               <img
+                                                    onclick="btn_modal()"
+                                                    class="card-img-top card_img "
                                                     src="../static/img/${file}"
                                                     alt="Card image cap">
                                                <div class="card-body">
@@ -493,16 +497,13 @@
 </section>
 {#모달창#}
 <div id="modal" class="modal-overlay">
-    <div class="modal-window">
-        <div class="title">
+    <div id ="madal_window"class="modal-window">
+        <div class="modal_title">
             <h2>모달</h2>
         </div>
         <div class="close-area" onclick="">X</div>
         <div class="content">
-            <p>가나다라마바사 아자차카타파하</p>
-            <p>가나다라마바사 아자차카타파하</p>
-            <p>가나다라마바사 아자차카타파하</p>
-            <p>가나다라마바사 아자차카타파하</p>
+            <img src="../static/logo.png" alt="">
 
         </div>
     </div>
@@ -511,13 +512,19 @@
 <script>
     {#모달 스크립트#}
 
-    let scroll_height = document.getElementById("요소ID").scrollTop;
+
     const modal = document.getElementById("modal")
 
-    const btnModal = document.getElementById("btn-modal")
-    btnModal.addEventListener("click", e => {
-        modal.style.display = "flex"
-    })
+    function btn_modal() {
+         console.log('모달 눌림')
+
+        $("#modal").css({
+            "display": "flex"
+        });
+        $("#modal_window").css({
+
+        })
+    }
     const closeBtn = modal.querySelector(".close-area")
     closeBtn.addEventListener("click", e => {
         modal.style.display = "none"
