@@ -269,6 +269,12 @@
             console.log('{{ user_info }}')
         });
 
+         function logout() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/login"
+        }
+
 
         {#포스트 열고 닫기#}
 
