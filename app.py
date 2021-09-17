@@ -19,7 +19,9 @@ SECRET_KEY = 'SPARTA'
 # db = client.todayKcal
 
 
+
 client = MongoClient('3.34.255.91', 27017, username="test", password="test")
+
 db = client.dbsparta_1stminiproject
 
 
@@ -83,6 +85,13 @@ def check_dup():
     return jsonify({'result': 'success', 'exists': exists})
 
 
+@app.route('/member/checknickname', methods=['POST'])
+def check_nick():
+    nickname_receive = request.form['nickname_give']
+    exists = bool(db.users.find_one({"nickname": nickname_receive}))
+    return jsonify({'result': 'success', 'exists': exists})
+
+
 @app.route('/mamber/join', methods=['POST'])
 def sign_up():
     username_receive = request.form['username_give']
@@ -94,6 +103,10 @@ def sign_up():
     if exists:
         return jsonify({'result': 'success', 'exists': exists});
 
+    exists_nick = bool(db.users.find_one({"nickname": nickname_receive}))
+    if exists_nick:
+        return jsonify({'result': 'success', 'exists_nick': exists_nick})
+
     doc = {
         "username": username_receive,  # 아이디
         "password": password_hash,  # 비밀번호
@@ -101,6 +114,7 @@ def sign_up():
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
+
 
 
 #음식정보 입력
@@ -146,12 +160,63 @@ def write_review():
 
 
 #음식정보 받기
+
+
+#음식정보 입력
+@app.route('/index', methods=['POST'])
+def write_review():
+    token_receive = request.cookies.get('mytoken')  # 쿠키를 항상 가져 옴
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.users.find_one({"username": payload["id"]})  # 유저 정보를 항상 알 수 있음
+
+        foodName_receive = request.form['foodName_give']
+        foodDate_receive = request.form['foodDate_give']
+        foodKcal_receive = request.form['foodKcal_give']
+        now_receive = request.form['now_give']
+        userinfo_receive = request.form['userinfo_give']
+        mainUser_receive = request.form['main_user']
+        print(userinfo_receive)
+
+        file = request.files["file_give"]
+
+        extension = file.filename.split('.')[-1]
+        today = datetime.now()
+        mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+
+        filename = f'file-{mytime}'
+        save_to = f'static/img/{filename}.{extension}'
+        file.save(save_to)
+
+        doc = {
+            'user_info': userinfo_receive,
+            'food_name': foodName_receive,
+            'user_nick': mainUser_receive,
+            'food_date': foodDate_receive,
+            'food_kcal': int(foodKcal_receive),
+            'file': f'{filename}.{extension}',
+            'now': now_receive
+        }
+
+        db.foodInfo.insert_one(doc)
+
+        return jsonify({'msg': '저장 완료!'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
+
+#음식정보 받기
+
+
 @app.route('/index', methods=['GET'])
 def show_diary():
     user_info_receive = request.args.get("user_info")
     foodInfos = list(db.foodInfo.find({}, {'_id': False}).sort("now", -1))
+    user_nick = list(db.users.find({}, {'_id': False}))
 
-    return jsonify({'all_foods': foodInfos})
+    return jsonify({'all_foods': foodInfos, 'user': user_nick})
+
 
 
 # 오늘의 프로필로 보내기
@@ -237,6 +302,8 @@ def show_profile():
     return jsonify({'profiles': profiles, 'status': status})
 
 
+
+#프로필 칼로리계산
 @app.route('/api/profile_cal', methods=['GET'])
 def show_profile_cal():
     myid_receive = request.args.get("myid")
@@ -260,12 +327,23 @@ def show_profile_cal():
 
         ])
 
+
     date_kalsum= list(agg_result)
     print(date_kalsum)
 
 
+
+    date_kalsum= list(agg_result)
+    print(date_kalsum)
+
+
+
     foodInfos = list(db.foodInfo.find({"user_info":myid_receive}, {'_id': False}).sort("now", -1))
     goal_cal = list(db.todayKcal.find({"myid": myid_receive}, {'_id': False}).sort("now", -1))
+
+    print(goal_cal)
+    print(foodInfos)
+
 
 
     return jsonify({'all_foods': foodInfos,'date_kalsum':date_kalsum,'goal_cal':goal_cal})
@@ -300,6 +378,27 @@ def update_profile():
     db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'bmi': bmi}})
     db.todayKcal.update_one({'myid': myid_receive}, {'$set': {'bmiscore': int(bmiscore)}})
 
+
+    return jsonify({'result': 'success'})
+
+#프로필 음식 사진출력
+@app.route('/api/profile_food', methods=['GET'])
+def show_food_cal():
+    myid_receive = request.args.get("myid")
+    print(myid_receive)
+
+
+    foodInfos = list(db.foodInfo.find({"user_info":myid_receive}, {'_id': False}).sort("now", -1))
+
+    print(foodInfos)
+    return jsonify({'all_foods': foodInfos})
+
+@app.route('/api/profile_delete', methods=['POST'])
+def delete_profile():
+    filename_receive = request.form['filename_give']
+    print(filename_receive)
+    result = db.foodInfo.delete_one({'file': filename_receive})
+    print(result)
     return jsonify({'result': 'success'})
 
 
@@ -310,6 +409,6 @@ def after_request(response):
 #오류 뜸
 
 if __name__ == '__main__':
-    app.run(debug=True)
+
 
     app.run('0.0.0.0', port=5000, debug=True)

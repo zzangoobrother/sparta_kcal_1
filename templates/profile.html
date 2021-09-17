@@ -36,47 +36,119 @@
 
     <!-- style -->
     <style type="text/css">
-        * {
+          * {
             font-family: 'Do Hyeon', sans-serif;
+            box-sizing: border-box;
         }
 
+<<<<<<< HEAD
         .jumbotron {
             width: 800px;
             margin-top: 50px;
+=======
+         /*{#헤드부분#}*/
+        .hero {
+            margin-bottom: 10px;
+            {#display: flex;#}
+            position: relative;
+        }
+        .hero-body {
+            display: flex;
+            justify-content: center;
+            align-self: center;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: center;
+            align-items: center;
+            padding: 30px 24px;
+        }
+        .logo-background {
+            background-image: url("../static/kcal.png");
+            background-size: cover;
+            width: 100px;
+            height: 100px;
+            margin: auto;
+            margin-bottom: 10px;
+        }
+        .logo-text {
+            margin-left: 20px;
+        }
+        .hero .buttons {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+        .btn_mypage {
+>>>>>>> kimbumsoo0820
             background-color: #72a772;
+        }
+        #btn_logout {
+            color: black;
+        }
+
+        {#프로필 수정기 입력하는 곳#}
+        /*{# 칼로리 입력기 #}*/
+        .jumbotron {
+            background-color: rgba(0,0,0,0);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            {#border: 1px solid;#}
+            padding: 0;
         }
 
         .text1 {
-            color: white;
+            color: #72a772;
         }
 
-        #btn-post-box {
-            background-color: rgba(27, 91, 27, 0.88);
+        #post-box {
+            position: relative;
         }
 
         #btn-fix-box {
-            background-color: rgba(27, 91, 27, 0.88);
+            font-weight: bold;
+            margin-top: 10px;
+            width: 400px;
+            padding: 10px;
+            background-color: yellowgreen;
+            border: 0;
+            border-radius: 20px;
+            cursor: pointer;
         }
 
-        .btn_register {
-            margin-top: 20px;
-            background-color: #72a772;
+        #height::placeholder,
+        #weight::placeholder,
+        #goal_cal::placeholder {
+            color: #dee2e6;
         }
 
-        .hero-body {
-            background-color: #7ac07a;
+        .btn_register{
+            width: 50%;
+            padding: 10px;
+            background-color: #fcc419;
+            border: 0;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 30px;
+            font-weight: bold;
+            position: relative;
+            left: 180px;
         }
 
-        .btn_mypage {
-            background-color: #72a772;
+        .comment {
+            color: #396270;
+            font-weight: bold;
         }
 
-
-        .wrap {
-            width: 900px;
-            margin: auto;
-
+        #post-box {
+            width: 450px;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #ebfbee;
         }
+
 
         #cards-box {
             object-fit: cover;
@@ -93,13 +165,6 @@
             font-weight: bold;
         }
 
-        #post-box {
-            width: 500px;
-            margin: 20px auto;
-            padding: 50px;
-            border: #396270 solid;
-            border-radius: 5px;
-        }
 
         #cards-box2 {
 
@@ -149,12 +214,41 @@
             margin: auto;
         }
 
+<<<<<<< HEAD
+=======
+         #btn-post-box {
+            font-weight: bold;
+            margin-top: 10px;
+            width: 400px;
+            padding: 10px;
+            background-color: yellowgreen;
+            border: 0;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+         .img_close {
+            width: 25px;
+            height: 20px;
+            position: absolute;
+            visibility: hidden;
+        }
+
+        .img_close img {
+            display: block;
+        }
+
+        .card_made:hover .img_close {
+            visibility: visible;
+        }
+>>>>>>> kimbumsoo0820
     </style>
     <script>
         //let userid = '{{ userid }}'
         $(document).ready(function () {
             listing();
             showkcal();
+            show_food();
         });
 
         function openmain() {
@@ -285,6 +379,7 @@
             })
         }
 
+<<<<<<< HEAD
 
 
 
@@ -343,9 +438,83 @@
                             let food_kcal = foods[i]['food_kcal']
                             let file = foods[i]['file']
                             let temp_html = `<div class="card card_made">
+=======
+
+        function showkcal() {
+            $('#cards-box').empty()
+            $('#sumcal').empty()
+
+            $.ajax({
+                type: "GET",
+                url: "/api/profile_cal?myid={{ userid }}",
+                data: {},
+                success: function (response) {
+                    let date_kalsum = response['date_kalsum']
+                    let goal_cal = response['goal_cal']
+                    console.log(goal_cal)
+                    if (goal_cal != "") {
+                        let goal = goal_cal[0]['goal_cal']
+
+                        let userid = "{{ userid }}"
+
+                        for (let i = 0; i < date_kalsum.length; i++) {
+                            let day_cal = date_kalsum[i]['total']
+                            let day = date_kalsum[i]['_id']['date']
+
+                            if (goal < day_cal) {
+                                let dis = parseInt(day_cal) - parseInt(goal)
+                                let temp_html = `<div class="calsum">
+  <div class="container">
+    <p class="profile_text">${day} ${userid}님의 총 섭취 칼로리는 <span style="color: #fcc419">${day_cal} </span> 입니다.!</p>
+<p class="profile_text">목표칼로리인 ${goal} 보다 ${dis} <span style="color: red">초과 되었습니다.</span></p>
+
+  </div>
+</div>
+                        `
+                                $('#sumcal').append(temp_html)
+                            } else {
+                                let temp_html = `<div class="calsum">
+  <div class="container">
+    <p class="profile_text" >${day} ${userid}님의 총 섭취 칼로리는 <span style="color: #fcc419">${day_cal} </span> 입니다.!</p>
+<p class="profile_text">목표칼로리인 ${goal} 보다 <span style="color: #7ac07a">낮습니다.</span> </p>
+
+  </div>
+</div>
+                        `
+
+                                $('#sumcal').append(temp_html)
+                            }
+
+                            {#$('#sumcal').append(temp_html)#}
+                        }
+                    } else {
+                        return
+
+                    }
+
+                }
+            })
+        }
+
+        function show_food() {
+            $("#cards-box").empty()
+            $.ajax({
+                type: "GET",
+                url: "/api/profile_food?myid={{ userid }}",
+                data: {},
+                success: function (response) {
+                    let foods = response['all_foods']
+                    for (let i = 0; i < foods.length; i++) {
+                        let food_name = foods[i]['food_name']
+                        let food_date = foods[i]['food_date']
+                        let food_kcal = foods[i]['food_kcal']
+                        let file = foods[i]['file']
+                        let temp_html = `<div class="card card_made">
+>>>>>>> kimbumsoo0820
                                                <img class="card-img-top card_img"
                                                     src="../static/img/${file}"
                                                     alt="Card image cap">
+                                               <button class="img_close" onclick="deletefood('${file}')"><img src="../static/img_close.png"></button>
                                                <div class="card-body">
                                                    <a class="card-title">${food_name}</a>
                                                    <p class="card-text">날짜: ${food_date}</p>
@@ -355,8 +524,14 @@
                             $('#cards-box').append(temp_html)
                         }
                     }
+<<<<<<< HEAD
                 })
             }
+=======
+                }
+            });
+        }
+>>>>>>> kimbumsoo0820
 
         function logout() {
             $.removeCookie('mytoken', {path: '/'});
@@ -364,57 +539,47 @@
             window.location.href = "/login"
         }
 
+        function deletefood(filename) {
+            $.ajax({
+                type: "POST",
+                url: "/api/profile_delete",
+                data: {
+                    filename_give: filename
+                },
+                success: function (response) {
+                    window.location.href = "/profile?status_give=old"
+                }
+            });
+        }
+
     </script>
 
 
 </head>
 
-<body>
-<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-            <img src="../static/logo.PNG" width="112" height="108">
-        </a>
-
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-        </a>
-    </div>
-
-    <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-
-        </div>
-    </div>
-    </div>
-
-    <div class="navbar-end">
-        <div class="navbar-item">
-            <div class="buttons">
-                <a class="button btn_mypage" onclick="openmain()">
-                    <strong>오늘의칼로리</strong>
-                </a>
-                <a class="button is-light" onclick="logout()">
-                    Log out
-                </a>
-            </div>
-        </div>
-    </div>
-    </div>
-</nav>
-
+<body>{# 헤더 #}
 <section class="hero is-success">
     <div class="hero-body">
-        <p class="title">
-            오늘의 프로필
-        </p>
-        <p class="subtitle">
-            Write your profile
-        </p>
+        <div class="logo-background"> </div>
+        <div class="logo-text">
+            <p class="title">
+                오늘의 프로필
+            </p>
+            <p class="subtitle">
+                Write your profile
+            </p>
+        </div>
     </div>
+    <div class="buttons">
+        <a class="button btn_mypage" onclick="openmain()">
+            <strong>오늘의칼로리</strong>
+        </a>
+        <a class="button is-light" id="btn_logout" onclick="logout()">
+            Log out
+        </a>
+     </div>
 </section>
+
 
 <div class="wrap">
 
@@ -422,7 +587,7 @@
         <div class="jumbotron">
             <h1 class="display-4 text1">프로필 입력기</h1>
             <p class="lead text1">프로필이 아직 입력이 안되었습니다. 입력해주세요!</p>
-            <hr class="my-4">
+{#            <hr class="my-4">#}
             <p class="lead">
                 <button onclick="openClose()" id="btn-post-box" type="button" class="btn btn-primary">입력하기
                 </button>
@@ -448,11 +613,15 @@
             </div>
         </div>
 
+<<<<<<< HEAD
+=======
+{# 프로필 수정기 #}
+>>>>>>> kimbumsoo0820
     {% else %}
         <div class="jumbotron">
             <h1 class="display-4 text1">프로필 수정기</h1>
             <p class="lead text1">기존 프로필 수정가능합니다.</p>
-            <hr class="my-4">
+{#            <hr class="my-4">#}
             <p class="lead">
                 <button onclick="openClose2()" id="btn-fix-box" type="button" class="btn btn-primary">수정하기
                 </button>
@@ -513,4 +682,3 @@
 </body>
 
 </html>
-
