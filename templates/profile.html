@@ -226,6 +226,20 @@
             cursor: pointer;
         }
 
+         .img_close {
+            width: 25px;
+            height: 20px;
+            position: absolute;
+            visibility: hidden;
+        }
+
+        .img_close img {
+            display: block;
+        }
+
+        .card_made:hover .img_close {
+            visibility: visible;
+        }
     </style>
     <script>
         //let userid = '{{ userid }}'
@@ -437,6 +451,7 @@
                                                <img class="card-img-top card_img"
                                                     src="../static/img/${file}"
                                                     alt="Card image cap">
+                                               <button class="img_close" onclick="deletefood('${file}')"><img src="../static/img_close.png"></button>
                                                <div class="card-body">
                                                    <a class="card-title">${food_name}</a>
                                                    <p class="card-text">날짜: ${food_date}</p>
@@ -453,6 +468,19 @@
             $.removeCookie('mytoken', {path: '/'});
             alert('로그아웃!')
             window.location.href = "/login"
+        }
+
+        function deletefood(filename) {
+            $.ajax({
+                type: "POST",
+                url: "/api/profile_delete",
+                data: {
+                    filename_give: filename
+                },
+                success: function (response) {
+                    window.location.href = "/profile?status_give=old"
+                }
+            });
         }
 
     </script>
