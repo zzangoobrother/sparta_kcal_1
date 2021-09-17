@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
 
+    {# og 파비콘 #}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="오늘의 칼로리 - 내몸을 건강하게 관리하세요"/>
+    <meta property="og:description" content="계획된 하루 먹은 칼로리 체크로 계획된 식단을 관리하세요"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.jpg') }}"/>
+
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <!-- Font Awesome CSS -->
@@ -155,8 +162,42 @@
                         $("#help-id").removeClass("is-loading")
                         return;
                     }
+
+                    if (response["exists_nick"]) {
+                        $("#help-nickname").text("이미 존재하는 닉네임입니다.").removeClass("is-safe").addClass("is-danger")
+                        $("#input-nickname").focus()
+                        $("#help-nickname").removeClass("is-loading")
+                        return;
+                    }
                     alert("회원가입 완료")
                     window.location.replace("/login")
+                }
+            });
+        }
+
+        function nicknamecheck() {
+            let nickname = $("#input-nickname").val()
+            if (nickname == "") {
+                $("#help-nickname").text("닉네임을 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                $("#input-nickname").focus()
+                return;
+            }
+
+            $("#help-id").addClass("is-loading")
+            $.ajax({
+                type: "POST",
+                url: "/member/checknickname",
+                data: {
+                    nickname_give: nickname
+                },
+                success: function (response) {
+                    if (response["exists"]) {
+                        $("#help-nickname").text("이미 존재하는 닉네임입니다.").removeClass("is-safe").addClass("is-danger")
+                    } else {
+                        $("#help-nickname").text("사용할 수 있는 닉네임입니다.").removeClass("is-danger").addClass("is-success")
+                    }
+                    $("#help-nickname").removeClass("is-loading")
+
                 }
             });
         }
@@ -184,8 +225,9 @@
 
                         <div class="field has-addons">
                             <div class="control has-icons-left" style="width:100%">
-                                <input id="input-nickname" class="input" type="text" placeholder="닉네임">
-                                <span class="icon is-small is-left"><i class="fa fa-user"></i></span>
+                                <input id="input-nickname" class="input" type="text" placeholder="닉네임" onkeyup="nicknamecheck()">
+                                <p id="help-nickname" class="help"></p>
+                                <p id="help-id-login" class="help is-danger"></p>
                             </div>
                         </div>
                         <p id="help-id-login2" class="help is-danger"></p>
