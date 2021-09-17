@@ -2,6 +2,12 @@
 <html lang="ko">
 
 <head>
+{#    파비콘#}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="오늘의 칼로리 - 내몸을 건강하게 관리하세요"/>
+    <meta property="og:description" content="계획된 하루 먹은 칼로리 체크로 계획된 식단을 관리하세요"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.jpg') }}"/>
 
     <!-- 상단주소 아이콘-->
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -44,7 +50,8 @@
         }
 
         /*
-        {#헤드부분#} */
+
+        {#헤드부분#}  */
         .hero {
             margin-bottom: 10px;
         {#display: flex;#} position: relative;
@@ -85,7 +92,8 @@
         }
 
         /*
-        {# 칼로리 입력기 #} */
+
+        {# 칼로리 입력기 #}  */
         .jumbotron {
             background-color: rgba(0, 0, 0, 0);
             display: flex;
@@ -197,12 +205,12 @@
             position: absolute;
             left: 0;
             top: 0;
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             background: rgba(255, 255, 255, 0.25);
-             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             backdrop-filter: blur(1.5px);
             -webkit-backdrop-filter: blur(1.5px);
             border-radius: 10px;
@@ -210,7 +218,7 @@
         }
 
         #modal .modal-window {
-            background: rgba(69, 139, 197, 0.70);
+            background: rgb(235, 246, 235);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             backdrop-filter: blur(13.5px);
             -webkit-backdrop-filter: blur(13.5px);
@@ -260,8 +268,6 @@
             showkcal();
             console.log('{{ user_info }}')
         });
-
-
 
 
         {#포스트 열고 닫기#}
@@ -393,7 +399,6 @@
         }
 
 
-
     </script>
 
 
@@ -486,7 +491,7 @@
         <div class="title">
             <h2>모달</h2>
         </div>
-        <div class="close-area">X</div>
+        <div class="close-area" onclick="">X</div>
         <div class="content">
             <p>가나다라마바사 아자차카타파하</p>
             <p>가나다라마바사 아자차카타파하</p>
@@ -498,41 +503,31 @@
 </div>
 
 <script>
-     {#모달 스크립트#}
+    {#모달 스크립트#}
 
-        const modal = document.getElementById("modal")
+    let scroll_height = document.getElementById("요소ID").scrollTop;
+    const modal = document.getElementById("modal")
 
-        function modalOn() {
-            modal.style.display = "flex"
-        }
-
-        function isModalOn() {
-            return modal.style.display === "flex"
-        }
-
-        function modalOff() {
+    const btnModal = document.getElementById("btn-modal")
+    btnModal.addEventListener("click", e => {
+        modal.style.display = "flex"
+    })
+    const closeBtn = modal.querySelector(".close-area")
+    closeBtn.addEventListener("click", e => {
+        modal.style.display = "none"
+    })
+    modal.addEventListener("click", e => {
+        const evTarget = e.target
+        if (evTarget.classList.contains("modal-overlay")) {
             modal.style.display = "none"
         }
+    })
+    window.addEventListener("keyup", e => {
+    if(modal.style.display === "flex" && e.key === "Escape") {
+        modal.style.display = "none"
+    }
+})
 
-        const btnModal = document.getElementById("btn-modal")
-        btnModal.addEventListener("click", e => {
-            modalOn()
-        })
-        const closeBtn = modal.querySelector(".close-area")
-        closeBtn.addEventListener("click", e => {
-            modalOff()
-        })
-        modal.addEventListener("click", e => {
-            const evTarget = e.target
-            if (evTarget.classList.contains("modal-overlay")) {
-                modalOff()
-            }
-        })
-        window.addEventListener("keyup", e => {
-            if (isModalOn() && e.key === "Escape") {
-                modalOff()
-            }
-        })
 </script>
 {#파일 첨부를 누르면 그 파일의 이름을 등록칸에 나타내기#}
 <script>
